@@ -76,7 +76,7 @@ def inject_premium_ui_css():
   --kk-input: rgba(255,255,255,.92);
   --kk-input-focus: rgba(46, 125, 255, .20);
 }
-
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --kk-border: rgba(255,255,255,0.14);
@@ -90,10 +90,11 @@ def inject_premium_ui_css():
     --kk-danger: #ff6b6b;
     --kk-success: #39d98a;
     --kk-warning: #ffd166;
-    --kk-input: rgba(255,255,255,.95);
-    --kk-input-focus: rgba(122, 167, 255, .22);
+    --kk-input: rgba(255,255,255,.96);
+    --kk-input-focus: rgba(122,167,255,.22);
   }
 }
+*/
 
 /* Background */
 [data-testid="stAppViewContainer"] {
