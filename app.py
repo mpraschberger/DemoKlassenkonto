@@ -68,8 +68,8 @@ def inject_premium_ui_css():
     --kk-border: rgba(255,255,255,0.14);
     --kk-border-strong: rgba(255,255,255,0.22);
     --kk-text: rgba(255,255,255,0.92);
-    --kk-muted: rgba(255,255,255,0.62);
-    --kk-bg: #0e1117;
+    --kk-muted: rgba(255,255,255,.98);
+    --kk-bg: #fff8cc;
     --kk-card: rgba(22, 27, 34, .82);
     --kk-accent: #7aa7ff;
     --kk-accent2: #42e7c6;
