@@ -1670,9 +1670,23 @@ def render_centered_login():
                             def col(v):
                                 return f'color: {"#ff6b6b" if v < 0 else "#39d98a"}; font-weight: bold'
                             st.dataframe(
-                                b[['Datum', 'Betrag', 'Beschreibung' ]]
+                                b[['Datum', 'Betrag', 'Beschreibung']]
                                 .style.map(col, subset=['Betrag'])
                                 .format({"Betrag": "{:.2f} €"}),
+                                column_config={
+                                    "Datum": st.column_config.TextColumn(
+                                        "Datum",
+                                        width="small"
+                                    ),
+                                    "Betrag": st.column_config.TextColumn(
+                                        "Betrag",
+                                        width="small"
+                                    ),
+                                    "Beschreibung": st.column_config.TextColumn(
+                                        "Beschreibung",
+                                        width="large"
+                                    ),
+                                },
                                 hide_index=True,
                                 use_container_width=True,
                             )
