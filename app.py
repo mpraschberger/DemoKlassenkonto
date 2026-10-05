@@ -21,9 +21,9 @@ from fpdf import FPDF
 # 1. KONFIGURATION & SETUP
 # -----------------------------------------------------------------------------
 st.set_page_config(
-page_title="Klassenkonto", 
+page_title="🧪DEMO_Klassenkonto", 
     layout="wide", 
-    page_icon="💶",
+    page_icon="🧪",
     initial_sidebar_state="collapsed"
 
 )
@@ -31,6 +31,7 @@ page_title="Klassenkonto",
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
 if APP_URL.endswith("/"): APP_URL = APP_URL[:-1]
+st.warning("🧪 DEMO-SYSTEM – TESTUMGEBUNG")
 
 
 
