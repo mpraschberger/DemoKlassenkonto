@@ -3942,7 +3942,7 @@ if menu == "Familien-Login":
                         else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
                     else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
                     st.write("PDF 2")
-                 st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
+                    st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
                 else: st.info("Keine Umsätze.")
             else: fam_register_fail(prefix='fam', max_tries=5, base_lock_s=60); time.sleep(0.6); st.error("Code ungültig.")
         else: st.error("Wartung: Datenbankfehler.")
