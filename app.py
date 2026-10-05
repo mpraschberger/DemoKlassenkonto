@@ -593,6 +593,7 @@ def load_stammdaten():
     for attempt in range(3):
         try:
             df_stamm = conn.read(worksheet="Stammdaten")
+            st.write(type(df_stamm))
             df_stamm.columns = df_stamm.columns.str.strip()
             for c in cols_stamm:
                 if c not in df_stamm.columns:
