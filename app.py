@@ -81,8 +81,8 @@ def inject_premium_ui_css():
   :root {
     --kk-border: rgba(255,255,255,0.14);
     --kk-border-strong: rgba(255,255,255,0.22);
-    --kk-text: rgba(255,255,255,0.92);
-    --kk-muted: rgba(255,255,255,.98);
+    --kk-text: rgba(49,51,63,0.92);
+    --kk-muted: rgba(49,51,63,0.62);
     --kk-bg: #eef1f5;
     --kk-card: rgba(255,255,255,.97);
     --kk-accent: #7aa7ff;
