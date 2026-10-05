@@ -90,7 +90,7 @@ def inject_premium_ui_css():
     --kk-danger: #ff6b6b;
     --kk-success: #39d98a;
     --kk-warning: #ffd166;
-    --kk-input: rgba(16, 20, 26, .86);
+    --kk-input: rgba(255,255,255,.95);
     --kk-input-focus: rgba(122, 167, 255, .22);
   }
 }
@@ -213,6 +213,19 @@ section[data-testid="stSidebar"] > div {
 }
 .kk-logo-img { width: 120px; height: auto; display:block; margin: 0 auto; }
 .kk-brand { display:flex; flex-direction:column; align-items:center; width:100%; }
+/* DEMO: dunkle Schrift erzwingen */
+html, body,
+p, span, label, div,
+h1, h2, h3, h4, h5, h6,
+.stMarkdown,
+[data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"],
+[data-testid="stRadio"],
+[data-testid="stCheckbox"],
+[data-testid="stText"],
+[data-testid="stSelectbox"] {
+    color: #31333f !important;
+}
 </style>
         """,
         unsafe_allow_html=True,
