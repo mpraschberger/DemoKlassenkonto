@@ -3913,6 +3913,7 @@ if menu == "Familien-Login":
                 sv=str(d['ID']).replace(".0","").strip().upper()
                 b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
                 
+                st.write(f"Anzahl Buchungen: {len(b)}")
                 if not b.empty:
                     sal = b['Betrag'].sum(); col_delta = "normal" if sal>=0 else "inverse"
                     st.metric("Guthaben", f"{sal:.2f} €", delta_color=col_delta)
