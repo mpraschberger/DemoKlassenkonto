@@ -32,7 +32,7 @@ FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app"
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
 if APP_URL.endswith("/"): APP_URL = APP_URL[:-1]
 st.error("🚧 DEMO-SYSTEM – KEINE ECHTEN DATEN")
- 
+
 st.markdown("""
 <div style="
 background:#b71c1c;
