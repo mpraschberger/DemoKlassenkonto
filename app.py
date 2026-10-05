@@ -31,17 +31,17 @@ page_title="🧪DEMO_Klassenkonto",
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
 if APP_URL.endswith("/"): APP_URL = APP_URL[:-1]
-st.warning("🧪 DEMO-SYSTEM – TESTUMGEBUNG")
+st.error("🚧 DEMO-SYSTEM – KEINE ECHTEN DATEN")
+ 
 st.markdown("""
 <div style="
 background:#b71c1c;
 color:white;
-padding:16px;
-border-radius:10px;
-font-size:28px;
+padding:15px;
+font-size:30px;
 font-weight:bold;
 text-align:center;
-margin-bottom:20px;
+margin-bottom:15px;
 ">
 🧪 DEMO-SYSTEM • ALLE DATEN SIND TESTDATEN
 </div>
@@ -81,8 +81,8 @@ def inject_premium_ui_css():
   :root {
     --kk-border: rgba(255,255,255,0.14);
     --kk-border-strong: rgba(255,255,255,0.22);
-    --kk-text: rgba(49,51,63,0.92);
-    --kk-muted: rgba(49,51,63,0.62);
+    --kk-text: rgba(#31333f);
+    --kk-muted: rgba(#6b7280);
     --kk-bg: #eef1f5;
     --kk-card: rgba(255,255,255,.97);
     --kk-accent: #7aa7ff;
