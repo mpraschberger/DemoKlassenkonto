@@ -3933,6 +3933,7 @@ if menu == "Familien-Login":
                     b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
                     def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
                     st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
+                    st.write("PDF 1")
                     if not df_klassen.empty:
                         k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
                         if not kr.empty:
@@ -3940,7 +3941,8 @@ if menu == "Familien-Login":
                             pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b, iban, bic, empf, sv)
                         else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
                     else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
-                    st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
+                    st.write("PDF 2")
+                 st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
                 else: st.info("Keine Umsätze.")
             else: fam_register_fail(prefix='fam', max_tries=5, base_lock_s=60); time.sleep(0.6); st.error("Code ungültig.")
         else: st.error("Wartung: Datenbankfehler.")
