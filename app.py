@@ -3941,7 +3941,10 @@ if menu == "Familien-Login":
                     f"{sal:.2f} €",
                     delta_color=col_delta
                 )
+                st.write("QR START")
                 if not df_klassen.empty:
+                    st.write("df_klassen leer?", df_klassen.empty)
+                    st.write("Klasse:", d['Klasse'])
                     k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
                     if not kr.empty:
                         iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
