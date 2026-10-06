@@ -2600,6 +2600,12 @@ elif menu == "Admin" and user_role == "Admin":
         # Ansicht-Spalten (fehlende werden leer gefüllt)
         _cols_show = ['Klasse','Name','Betrag','ID','Archiv_Datum','Archiviert']
         master_view = master.reindex(columns=_cols_show)
+
+        master_view = master_view.sort_values(
+            by=["Klasse", "Name"],
+            ascending=[True, True]
+        )
+
         master_view = format_date_columns(master_view, cols=['Archiv_Datum'])
         st.dataframe(master_view, column_config={"Betrag":st.column_config.NumberColumn("Saldo", format="%.2f €")}, hide_index=True, use_container_width=True, height=600)
 
