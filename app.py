@@ -3789,6 +3789,8 @@ if menu == "Familien-Login":
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
     
     if ic:
+        st.error("LOGIN BLOCK")
+
         # Fehlversuchs-Sperre (Brute-Force-Schutz)
         locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
         if locked:
