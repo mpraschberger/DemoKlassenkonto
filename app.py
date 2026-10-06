@@ -2598,6 +2598,12 @@ elif menu == "Admin" and user_role == "Admin":
 
         if sel_klasse != "Alle Klassen":
             master = master[master["Klasse"] == sel_klasse]
+        with col_kpi:
+            st.metric(
+                "Gesamt-Guthaben (Auswahl)",
+                f"{master['Betrag'].sum():.2f} €",
+                f"{len(master)} Schüler"
+            )
         # --- Robustheit: Archiv-Spalten können fehlen (z.B. leeres/fehlendes Archiv) ---
         for _c, _default in [("Archiv_Datum", ""), ("Archiviert", "Nein")]:
             if _c not in master.columns:
