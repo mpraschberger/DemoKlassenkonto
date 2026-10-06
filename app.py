@@ -2606,7 +2606,7 @@ elif menu == "Admin" and user_role == "Admin":
                 f"{master['Betrag'].sum():.2f} €",
                 f"{len(master)} Schüler"
             )
-`
+
         # --- Robustheit: Archiv-Spalten können fehlen (z.B. leeres/fehlendes Archiv) ---
         for _c, _default in [("Archiv_Datum", ""), ("Archiviert", "Nein")]:
             if _c not in master.columns:
