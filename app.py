@@ -3941,19 +3941,20 @@ if menu == "Familien-Login":
                     f"{sal:.2f} €",
                     delta_color=col_delta
                 )
+                if not df_klassen.empty:
+                    k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
+                    if not kr.empty:
+                        iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
+                        empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+                        if iban:
+                            if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
+                            else: amount_qr = 0.00
+                            st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
+                            qr_text = f"{sv} {d['Name']}"
+                            qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
+                            if qr_buffer: st.image(qr_buffer, width=200)
                 if not b.empty:
-                    if not df_klassen.empty:
-                        k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
-                        if not kr.empty:
-                            iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
-                            empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
-                            if iban:
-                                if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
-                                else: amount_qr = 0.00
-                                st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
-                                qr_text = f"{sv} {d['Name']}"
-                                qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
-                                if qr_buffer: st.image(qr_buffer, width=200)
+                    
                     
                     b = b.sort_values('Datum', ascending=False)
                     b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
