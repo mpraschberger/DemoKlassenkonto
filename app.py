@@ -1606,7 +1606,105 @@ def render_centered_login():
                 type="password",
                 placeholder="Zugangscode"
             )
+            if ic:
+                    # Fehlversuchs-Sperre (Brute-Force-Schutz)
+                    locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
+                    if locked:
+                        st.warning(f"Zu viele Fehlversuche. Bitte {rem} Sekunden warten.")
+                        st.stop()
+                    if 'Zugangscode' in df_stamm.columns:
+                        clean_code = ic.strip()
+                    
+                        r = df_stamm[df_stamm['Zugangscode']==clean_code]
+                        
+                        if not r.empty:
+                            d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
+                            fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
+                            
 
+                            if not df_klassen.empty:
+                                msg_row = df_klassen[df_klassen['Klasse'] == student_class]
+                                if not msg_row.empty:
+                                    msg_text = str(msg_row.iloc[0]['Nachricht'])
+                                    if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
+                            
+                            sv=str(d['ID']).replace(".0","").strip().upper()
+                            b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
+                            
+                            sal = b['Betrag'].sum() if not b.empty else 0.0
+                            col_delta = "normal" if sal >= 0 else "inverse"
+
+                            st.metric(
+                                "Guthaben",
+                                f"{sal:.2f} €",
+                                delta_color=col_delta
+                            )
+                            
+                            if not df_klassen.empty:
+                                
+                                
+                                k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
+                                if not kr.empty:
+                                    iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
+                                    empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+                                    if iban:
+                                        if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
+                                        else: amount_qr = 0.00
+                                        st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
+                                        qr_text = f"{sv} {d['Name']}"
+                                        qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
+                                        if qr_buffer: st.image(qr_buffer, width=200)
+                            if not b.empty:
+                                
+                                
+                                b = b.sort_values('Datum', ascending=False)
+                                b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
+                                def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
+                                st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
+                                
+                            else:
+                                st.info("Keine Umsätze.")
+
+                            if not df_klassen.empty:
+                                k = d['Klasse']
+                                
+
+                                kr = df_klassen[df_klassen['Klasse'] == k]
+                                
+
+                                if not kr.empty:
+                                    iban = kr.iloc[0]['IBAN']
+                                    bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
+                                    empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+
+                                    pdf_bytes = create_pdf_report(
+                                        d['Name'],
+                                        d['Klasse'],
+                                        b,
+                                        iban,
+                                        bic,
+                                        empf,
+                                        sv
+                                    )
+                                else:
+                                    pdf_bytes = create_pdf_report(
+                                        d['Name'],
+                                        d['Klasse'],
+                                        b
+                                    )
+                            else:
+                                pdf_bytes = create_pdf_report(
+                                    d['Name'],
+                                    d['Klasse'],
+                                    b
+                                )
+
+                            st.download_button(
+                                "📄 Kontoauszug (PDF)",
+                                data=pdf_bytes,
+                                file_name=f"Kontoauszug_{d['Name']}.pdf",
+                                mime='application/pdf'
+                            )
 
         
             
@@ -3803,112 +3901,7 @@ if menu == "Familien-Login":
 
     c = url_code if url_code else ""
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
-    if ic:
-        st.success("Code erkannt")
-    
    
-
-    
-    
-
-        # Fehlversuchs-Sperre (Brute-Force-Schutz)
-        locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
-        if locked:
-            st.warning(f"Zu viele Fehlversuche. Bitte {rem} Sekunden warten.")
-            st.stop()
-        if 'Zugangscode' in df_stamm.columns:
-            clean_code = ic.strip()
-           
-            r = df_stamm[df_stamm['Zugangscode']==clean_code]
-            
-            if not r.empty:
-                d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
-                fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
-                
-
-                if not df_klassen.empty:
-                    msg_row = df_klassen[df_klassen['Klasse'] == student_class]
-                    if not msg_row.empty:
-                        msg_text = str(msg_row.iloc[0]['Nachricht'])
-                        if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
-                
-                sv=str(d['ID']).replace(".0","").strip().upper()
-                b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
-                
-                sal = b['Betrag'].sum() if not b.empty else 0.0
-                col_delta = "normal" if sal >= 0 else "inverse"
-
-                st.metric(
-                    "Guthaben",
-                    f"{sal:.2f} €",
-                    delta_color=col_delta
-                )
-                
-                if not df_klassen.empty:
-                    
-                    
-                    k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
-                    if not kr.empty:
-                        iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
-                        empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
-                        if iban:
-                            if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
-                            else: amount_qr = 0.00
-                            st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
-                            qr_text = f"{sv} {d['Name']}"
-                            qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
-                            if qr_buffer: st.image(qr_buffer, width=200)
-                if not b.empty:
-                    
-                    
-                    b = b.sort_values('Datum', ascending=False)
-                    b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
-                    def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
-                    st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
-                    
-                else:
-                    st.info("Keine Umsätze.")
-
-                if not df_klassen.empty:
-                    k = d['Klasse']
-                    
-
-                    kr = df_klassen[df_klassen['Klasse'] == k]
-                    
-
-                    if not kr.empty:
-                        iban = kr.iloc[0]['IBAN']
-                        bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
-                        empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
-
-                        pdf_bytes = create_pdf_report(
-                            d['Name'],
-                            d['Klasse'],
-                            b,
-                            iban,
-                            bic,
-                            empf,
-                            sv
-                        )
-                    else:
-                        pdf_bytes = create_pdf_report(
-                            d['Name'],
-                            d['Klasse'],
-                            b
-                        )
-                else:
-                    pdf_bytes = create_pdf_report(
-                        d['Name'],
-                        d['Klasse'],
-                        b
-                    )
-
-                st.download_button(
-                    "📄 Kontoauszug (PDF)",
-                    data=pdf_bytes,
-                    file_name=f"Kontoauszug_{d['Name']}.pdf",
-                    mime='application/pdf'
-                )
 
                        
 st.divider(); st.caption("MS Niederndorf v30.4 (Secure & Private)")
