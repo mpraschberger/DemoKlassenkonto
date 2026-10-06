@@ -1587,7 +1587,25 @@ def render_centered_login():
                         st.error("❌ Passwort stimmt nicht. Tipp: Groß-/Kleinschreibung prüfen.")
                 else:
                     st.error("❌ Diese E-Mail ist nicht registriert.")
+        with tab_fam:
+            st.markdown(
+                '<span class="kk-pill">🔑 Zugangscode (Eltern)</span>',
+                unsafe_allow_html=True
+            )
 
+            try:
+                url_code = st.query_params.get("code", "")
+            except Exception:
+                url_code = ""
+
+            c = url_code if url_code else ""
+
+            ic = st.text_input(
+                "Bitte Zugangscode eingeben:",
+                value=c,
+                type="password",
+                placeholder="Zugangscode"
+            )
 
 
         
