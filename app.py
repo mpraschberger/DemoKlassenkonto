@@ -1613,6 +1613,8 @@ def render_centered_login():
                         student_name = d.get('Name', '')
                         student_class = d.get('Klasse', '')
                         fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
+                        st.error("ZWEITER BLOCK")
+
 
                         if not df_klassen.empty:
                             msg_row = df_klassen[df_klassen['Klasse'] == student_class]
@@ -3923,7 +3925,8 @@ if menu == "Familien-Login":
             if not r.empty:
                 d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
                 fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
-                
+                st.error("ZWEITER BLOCK")
+
                 if not df_klassen.empty:
                     msg_row = df_klassen[df_klassen['Klasse'] == student_class]
                     if not msg_row.empty:
