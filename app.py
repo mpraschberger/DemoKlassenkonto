@@ -1598,6 +1598,8 @@ def render_centered_login():
                 url_code = ""
             c = url_code if url_code else ""
             ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password", placeholder="Zugangscode")
+            st.write("TAB_FAM IC:", repr(ic))
+
 
             
 def render_centered_password_change():
@@ -3789,6 +3791,8 @@ if menu == "Familien-Login":
 
     c = url_code if url_code else ""
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
+    st.write("LOGIN IC:", repr(ic))
+
     
     if ic:
         st.write("IC:", repr(ic))
