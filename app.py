@@ -2555,14 +2555,14 @@ elif menu == "Admin" and user_role == "Admin":
     st.divider()
     admin_group = st.radio("Bereich:", ["💶 Finanzen", "🛠️ Verwaltung"], horizontal=True)
     if admin_group == "💶 Finanzen":
-        s_menu = st.radio("Menü:", ["Manuell Buchen", "Bank-Import", "OFFEN", "Gesamt-Übersicht", "Schüler-Akte", "Umsatzsuche"], horizontal=True)
+        s_menu = st.radio("Menü:", ["Manuell Buchen", "Bank-Import", "OFFEN", "🏫 Klassenübersicht", "Schüler-Akte", "Umsatzsuche"], horizontal=True)
     else:
         s_menu = st.radio("Menü:", ["Benutzer anlegen", "Passwort Reset", "Zugangs-Daten", "Schuljahreswechsel", "Administration"], horizontal=True)
 
     st.divider()
     
-    if s_menu == "Gesamt-Übersicht":
-        st.subheader("👥 Schüler-Verzeichnis (Alle Salden)")
+    if s_menu == "🏫 Klassenübersicht":
+        st.subheader("🏫 Klassenübersicht")
         all_s = df_stamm[df_stamm['Rolle']=='Schüler'].copy()
         sald_all = df_buch.groupby('ID')['Betrag'].sum().reset_index()
         master = pd.merge(all_s, sald_all, on='ID', how='left'); master['Betrag'] = master['Betrag'].fillna(0.0)
@@ -2585,8 +2585,7 @@ elif menu == "Admin" and user_role == "Admin":
                 for c in master.columns:
                     if c not in arch_s.columns: arch_s[c] = ""
                 master = pd.concat([master, arch_s[master.columns]], ignore_index=True)
-        col_kpi = st.container()
-        
+              
         
         col_klasse, col_kpi = st.columns([2, 1])
 
@@ -2603,10 +2602,11 @@ elif menu == "Admin" and user_role == "Admin":
 
         with col_kpi:
             st.metric(
-                f"💰 Guthaben {sel_klasse}",
+                "💰 Klassenguthaben",
                 f"{master['Betrag'].sum():.2f} €",
                 f"{len(master)} Schüler"
             )
+`
         # --- Robustheit: Archiv-Spalten können fehlen (z.B. leeres/fehlendes Archiv) ---
         for _c, _default in [("Archiv_Datum", ""), ("Archiviert", "Nein")]:
             if _c not in master.columns:
