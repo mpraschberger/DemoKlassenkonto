@@ -2592,7 +2592,16 @@ elif menu == "Admin" and user_role == "Admin":
             mask = master.astype(str).apply(lambda x: x.str.contains(search_term, case=False)).any(axis=1)
             master = master[mask]
         with col_kpi:
-            st.metric("Gesamt-Guthaben (Auswahl)", f"{master['Betrag'].sum():.2f} €", f"{len(master)} Schüler")
+        st.metric("Gesamt-Guthaben (Auswahl)", f"{master['Betrag'].sum():.2f} €", f"{len(master)} Schüler")
+        klassen_liste = sorted(master["Klasse"].dropna().astype(str).unique())
+
+        sel_klasse = st.selectbox(
+            "🏫 Klasse auswählen",
+            ["Alle Klassen"] + klassen_liste
+        )
+
+        if sel_klasse != "Alle Klassen":
+            master = master[master["Klasse"] == sel_klasse]
         # --- Robustheit: Archiv-Spalten können fehlen (z.B. leeres/fehlendes Archiv) ---
         for _c, _default in [("Archiv_Datum", ""), ("Archiviert", "Nein")]:
             if _c not in master.columns:
