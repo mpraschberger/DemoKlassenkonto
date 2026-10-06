@@ -3780,7 +3780,7 @@ Admin;Frau Sekretariat;;;;
 # -----------------------------------------------------------------------------
 if menu == "Familien-Login":
     st.header("👨‍👩‍👧 Familien-Login")
-    st.error("FAMILIENBLOCK")
+    
 
     try:
         query_params = st.query_params
@@ -3791,7 +3791,8 @@ if menu == "Familien-Login":
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
     
     if ic:
-        st.error("LOGIN BLOCK")
+        st.write("IC:", repr(ic))
+       
 
         # Fehlversuchs-Sperre (Brute-Force-Schutz)
         locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
@@ -3801,10 +3802,11 @@ if menu == "Familien-Login":
         if 'Zugangscode' in df_stamm.columns:
             clean_code = ic.strip()
             r = df_stamm[df_stamm['Zugangscode']==clean_code]
+            st.write("Treffer:", len(r))
             if not r.empty:
                 d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
                 fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
-                st.error("ZWEITER BLOCK")
+                
 
                 if not df_klassen.empty:
                     msg_row = df_klassen[df_klassen['Klasse'] == student_class]
@@ -3851,7 +3853,7 @@ if menu == "Familien-Login":
 
                 if not df_klassen.empty:
                     k = d['Klasse']
-                    st.write("Klasse:", d['Klasse'])
+                    
 
                     kr = df_klassen[df_klassen['Klasse'] == k]
                     
