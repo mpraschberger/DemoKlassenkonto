@@ -2585,12 +2585,8 @@ elif menu == "Admin" and user_role == "Admin":
                 for c in master.columns:
                     if c not in arch_s.columns: arch_s[c] = ""
                 master = pd.concat([master, arch_s[master.columns]], ignore_index=True)
-        col_search, col_kpi = st.columns([2, 1])
-        with col_search:
-            search_term = st.text_input("🔍 Schüler suchen (Filter):", placeholder="Name, Klasse oder ID eingeben...")
-        if search_term:
-            mask = master.astype(str).apply(lambda x: x.str.contains(search_term, case=False)).any(axis=1)
-            master = master[mask]
+        col_kpi = st.container()
+        
         with col_kpi:
             st.metric("Gesamt-Guthaben (Auswahl)", f"{master['Betrag'].sum():.2f} €", f"{len(master)} Schüler")
         klassen_liste = sorted(master["Klasse"].dropna().astype(str).unique())
