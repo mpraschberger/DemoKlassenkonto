@@ -2589,18 +2589,22 @@ elif menu == "Admin" and user_role == "Admin":
         
         with col_kpi:
             st.metric("Gesamt-Guthaben (Auswahl)", f"{master['Betrag'].sum():.2f} €", f"{len(master)} Schüler")
-        klassen_liste = sorted(master["Klasse"].dropna().astype(str).unique())
+        col_klasse, col_kpi = st.columns([2, 1])
 
-        sel_klasse = st.selectbox(
-            "🏫 Klasse auswählen",
-            ["Alle Klassen"] + klassen_liste
-        )
+        with col_klasse:
+            klassen_liste = sorted(master["Klasse"].dropna().astype(str).unique())
+
+            sel_klasse = st.selectbox(
+                "🏫 Klasse auswählen",
+                ["Alle Klassen"] + klassen_liste
+            )
 
         if sel_klasse != "Alle Klassen":
             master = master[master["Klasse"] == sel_klasse]
+
         with col_kpi:
             st.metric(
-                "Gesamt-Guthaben (Auswahl)",
+                f"💰 Guthaben {sel_klasse}",
                 f"{master['Betrag'].sum():.2f} €",
                 f"{len(master)} Schüler"
             )
