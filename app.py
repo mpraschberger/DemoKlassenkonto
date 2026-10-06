@@ -3966,7 +3966,10 @@ if menu == "Familien-Login":
 
                 if not df_klassen.empty:
                     k = d['Klasse']
+                    st.write("Klasse:", d['Klasse'])
+
                     kr = df_klassen[df_klassen['Klasse'] == k]
+                    st.write("Treffer:", len(kr))
 
                     if not kr.empty:
                         iban = kr.iloc[0]['IBAN']
