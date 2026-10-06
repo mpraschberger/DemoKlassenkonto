@@ -3780,6 +3780,8 @@ Admin;Frau Sekretariat;;;;
 # -----------------------------------------------------------------------------
 if menu == "Familien-Login":
     st.header("👨‍👩‍👧 Familien-Login")
+    st.error("FAMILIENBLOCK")
+
     try:
         query_params = st.query_params
         url_code = query_params.get("code", "")
