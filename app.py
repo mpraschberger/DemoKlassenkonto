@@ -2587,8 +2587,7 @@ elif menu == "Admin" and user_role == "Admin":
                 master = pd.concat([master, arch_s[master.columns]], ignore_index=True)
         col_kpi = st.container()
         
-        with col_kpi:
-            st.metric("Gesamt-Guthaben (Auswahl)", f"{master['Betrag'].sum():.2f} €", f"{len(master)} Schüler")
+        
         col_klasse, col_kpi = st.columns([2, 1])
 
         with col_klasse:
