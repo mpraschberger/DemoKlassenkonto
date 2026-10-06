@@ -3801,6 +3801,7 @@ if menu == "Familien-Login":
             st.stop()
         if 'Zugangscode' in df_stamm.columns:
             clean_code = ic.strip()
+            st.write("Code:", clean_code)
             r = df_stamm[df_stamm['Zugangscode']==clean_code]
             st.write("Treffer:", len(r))
             if not r.empty:
