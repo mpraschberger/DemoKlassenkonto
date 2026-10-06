@@ -3933,10 +3933,15 @@ if menu == "Familien-Login":
                 sv=str(d['ID']).replace(".0","").strip().upper()
                 b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
                 
-                st.write(f"Anzahl Buchungen: {len(b)}")
+                sal = b['Betrag'].sum() if not b.empty else 0.0
+                col_delta = "normal" if sal >= 0 else "inverse"
+
+                st.metric(
+                    "Guthaben",
+                    f"{sal:.2f} €",
+                    delta_color=col_delta
+                )
                 if not b.empty:
-                    sal = b['Betrag'].sum(); col_delta = "normal" if sal>=0 else "inverse"
-                    st.metric("Guthaben", f"{sal:.2f} €", delta_color=col_delta)
                     if not df_klassen.empty:
                         k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
                         if not kr.empty:
@@ -3954,19 +3959,59 @@ if menu == "Familien-Login":
                     b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
                     def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
                     st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
-                    st.write("PDF 1")
-                    if not df_klassen.empty:
-                        k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
-                        if not kr.empty:
-                            iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""; empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
-                            pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b, iban, bic, empf, sv)
-                        else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
-                    else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
-                    st.write("PDF 2")
-                    st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
-                else: st.info("Keine Umsätze.")
-            else: fam_register_fail(prefix='fam', max_tries=5, base_lock_s=60); time.sleep(0.6); st.error("Code ungültig.")
-        else: st.error("Wartung: Datenbankfehler.")
+                    
+                else:
+                    st.info("Keine Umsätze.")
+
+                if not df_klassen.empty:
+                    k = d['Klasse']
+                    kr = df_klassen[df_klassen['Klasse'] == k]
+
+                    if not kr.empty:
+                        iban = kr.iloc[0]['IBAN']
+                        bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
+                        empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+
+                        pdf_bytes = create_pdf_report(
+                            d['Name'],
+                            d['Klasse'],
+                            b,
+                            iban,
+                            bic,
+                            empf,
+                            sv
+                        )
+                    else:
+                        pdf_bytes = create_pdf_report(
+                            d['Name'],
+                            d['Klasse'],
+                            b
+                        )
+                else:
+                    pdf_bytes = create_pdf_report(
+                        d['Name'],
+                        d['Klasse'],
+                        b
+                    )
+
+                st.download_button(
+                    "📄 Kontoauszug (PDF)",
+                    data=pdf_bytes,
+                    file_name=f"Kontoauszug_{d['Name']}.pdf",
+                    mime='application/pdf'
+                )
+
+                        else:
+                            fam_register_fail(
+                                prefix='fam',
+                                max_tries=5,
+                                base_lock_s=60
+                            )
+                            time.sleep(0.6)
+                            st.error("Code ungültig.")
+
+                    else:
+                        st.error("Wartung: Datenbankfehler.")
 
 st.divider(); st.caption("MS Niederndorf v30.4 (Secure & Private)")
 
