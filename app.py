@@ -1598,8 +1598,10 @@ def render_centered_login():
                 url_code = ""
             c = url_code if url_code else ""
             ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password", placeholder="Zugangscode")
+            if ic:
+                st.success("CODE ERKANNT")
             
-            st.write("TAB_FAM IC:", repr(ic))
+            
 
 
             
@@ -3811,7 +3813,7 @@ if menu == "Familien-Login":
             clean_code = ic.strip()
             st.write("Code:", clean_code)
             r = df_stamm[df_stamm['Zugangscode']==clean_code]
-            st.write("Treffer:", len(r))
+            
             if not r.empty:
                 d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
                 fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
