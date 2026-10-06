@@ -1590,16 +1590,7 @@ def render_centered_login():
 
 
 
-        with tab_fam:
-            st.markdown("<span class='kk-pill'>🔑 Zugangscode (Eltern)</span>", unsafe_allow_html=True)
-            try:
-                url_code = st.query_params.get("code", "")
-            except Exception:
-                url_code = ""
-            c = url_code if url_code else ""
-            ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password", placeholder="Zugangscode")
-            if ic:
-                st.success("CODE ERKANNT")
+        
             
             
 
@@ -3797,12 +3788,10 @@ if menu == "Familien-Login":
     if ic:
         st.success("Code erkannt")
     
-    st.write("LOGIN IC:", repr(ic))
+   
 
     
-    if ic:
-        st.write("IC:", repr(ic))
-       
+    
 
         # Fehlversuchs-Sperre (Brute-Force-Schutz)
         locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
@@ -3811,7 +3800,7 @@ if menu == "Familien-Login":
             st.stop()
         if 'Zugangscode' in df_stamm.columns:
             clean_code = ic.strip()
-            st.write("Code:", clean_code)
+           
             r = df_stamm[df_stamm['Zugangscode']==clean_code]
             
             if not r.empty:
