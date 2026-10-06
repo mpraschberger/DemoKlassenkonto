@@ -3793,8 +3793,7 @@ if menu == "Familien-Login":
 
     c = url_code if url_code else ""
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
-    if ic:
-        st.success("Code erkannt")
+    
     st.write("LOGIN IC:", repr(ic))
 
     
