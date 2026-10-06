@@ -4001,18 +4001,7 @@ if menu == "Familien-Login":
                     mime='application/pdf'
                 )
 
-                        else:
-                            fam_register_fail(
-                                prefix='fam',
-                                max_tries=5,
-                                base_lock_s=60
-                            )
-                            time.sleep(0.6)
-                            st.error("Code ungültig.")
-
-                    else:
-                        st.error("Wartung: Datenbankfehler.")
-
+                       
 st.divider(); st.caption("MS Niederndorf v30.4 (Secure & Private)")
 
 
