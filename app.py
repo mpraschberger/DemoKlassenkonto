@@ -3671,22 +3671,18 @@ Admin;Frau Sekretariat;;;;
                 filtered_df = filtered_df[
                     ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
                 ]
-                gruppen = (
-                    filtered_df.groupby(
-                        ['Zeitstempel', 'Beschreibung', 'Erfasst_Von'],
-                        dropna=False
-                    )
-                    .agg(
-                        Anzahl=('ID', 'count'),
-                        Gesamtbetrag=('Betrag', 'sum')
-                    )
-                    .reset_index()
-                    .sort_values(
-                        ['Zeitstempel', 'Erfasst_Von'],
-                        ascending=[False, True]
-                    )
+                storno_beschreibungen = (
+                    filtered_df[
+                        filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
+                    ]['Beschreibung']
+                    .astype(str)
+                    .str.replace("Storno: ", "", regex=False)
+                    .unique()
                 )
 
+                filtered_df = filtered_df[
+                    ~filtered_df['Beschreibung'].isin(storno_beschreibungen)
+                ]
                 gruppen = (
                     filtered_df.groupby(
                         ['Zeitstempel', 'Beschreibung', 'Erfasst_Von', 'Klasse'],
