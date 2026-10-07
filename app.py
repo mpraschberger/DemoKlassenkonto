@@ -3736,8 +3736,7 @@ Admin;Frau Sekretariat;;;;
                             data=df_buch
                         )
                         # Originalbuchungen als storniert markieren
-                        orig_idx = gruppe.index.tolist()
-
+                        
                         df_buch.loc[orig_idx, "Status"] = "Storniert"
 
                         conn.update(
