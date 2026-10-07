@@ -3663,6 +3663,9 @@ Admin;Frau Sekretariat;;;;
                 filtered_df = filtered_df[
                     filtered_df['Erfasst_Von'] != 'Bank-Import'
                 ]
+                filtered_df = filtered_df[
+                    filtered_df['Status'].astype(str).str.strip() != "Storniert"
+                ]
                 # Storno-Buchungen ausblenden
                 filtered_df = filtered_df[
                     ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
@@ -3725,6 +3728,15 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
+                        # Originalbuchungen als storniert markieren
+                        orig_idx = gruppe.index.tolist()
+
+                        df_buch.loc[orig_idx, "Status"] = "Storniert"
+
+                        conn.update(
+                            worksheet="Buchungen",
+                            data=df_buch
+                        )
 
                         for _, buch in gruppe.iterrows():
 
