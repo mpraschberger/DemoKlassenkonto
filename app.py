@@ -3762,8 +3762,11 @@ Admin;Frau Sekretariat;;;;
                                 "Status": "Erledigt"
                             })
                         
-                        save_buchung_batch(
-                            pd.DataFrame(storno_liste)
+                       ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
+
+                        ws.append_rows(
+                            pd.DataFrame(storno_liste).astype(str).values.tolist(),
+                            value_input_option='USER_ENTERED'
                         )
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
