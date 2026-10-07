@@ -3747,17 +3747,24 @@ Admin;Frau Sekretariat;;;;
                             data=df_buch
                         )
 
-                        for _, buch in gruppe.iterrows():
+                       storno_liste = []
 
-                            save_buchung_einzeln(
-                                datetime.today(),
-                                buch['ID'],
-                                buch['Name'],
-                                f"Storno: {buch['Beschreibung']}",
-                                float(buch['Betrag']) * -1,
-                                user_name,
-                                "Erledigt"
-                            )
+                        for _, buch in gruppe.iterrows():
+                        
+                            storno_liste.append({
+                                "Datum": datetime.today().strftime("%Y-%m-%d"),
+                                "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                "ID": buch["ID"],
+                                "Name": buch["Name"],
+                                "Beschreibung": f"Storno: {buch['Beschreibung']}",
+                                "Betrag": float(buch["Betrag"]) * -1,
+                                "Erfasst_Von": user_name,
+                                "Status": "Erledigt"
+                            })
+                        
+                        save_buchung_batch(
+                            pd.DataFrame(storno_liste)
+                        )
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
                         time.sleep(1)
