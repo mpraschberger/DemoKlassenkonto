@@ -3739,31 +3739,31 @@ Admin;Frau Sekretariat;;;;
                        
                         # Originalbuchungen als storniert markieren
                         orig_idx = gruppe.index.tolist()
-                        st.stop()
 
-                        df_buch.loc[orig_idx, "Status"] = "Storniert"
-                        st.error("ICH BIN VOR DEM UPDATE")
-                        st.stop()
-
-                        conn.update(
-                            worksheet="Buchungen",
-                            data=df_buch
-                        )
-
-                        storno_liste = []
-
-                        for _, buch in gruppe.iterrows():
-
-                            storno_liste.append({
-                                "Datum": datetime.today().strftime("%Y-%m-%d"),
-                                "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                "ID": buch["ID"],
-                                "Name": buch["Name"],
-                                "Beschreibung": f"Storno: {buch['Beschreibung']}",
-                                "Betrag": float(buch["Betrag"]) * -1,
-                                "Erfasst_Von": user_name,
-                                "Status": "Erledigt"
-                            })
+                    df_buch.loc[orig_idx, "Status"] = "Storniert"
+                    
+                    st.error("ICH BIN VOR DEM UPDATE")
+                    st.stop()
+                    
+                    conn.update(
+                        worksheet="Buchungen",
+                        data=df_buch
+                    )
+                    
+                    storno_liste = []
+                    
+                    for _, buch in gruppe.iterrows():
+                    
+                        storno_liste.append({
+                            "Datum": datetime.today().strftime("%Y-%m-%d"),
+                            "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "ID": buch["ID"],
+                            "Name": buch["Name"],
+                            "Beschreibung": f"Storno: {buch['Beschreibung']}",
+                            "Betrag": float(buch["Betrag"]) * -1,
+                            "Erfasst_Von": user_name,
+                            "Status": "Erledigt"
+                        })
 
                         ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
 
