@@ -3660,6 +3660,14 @@ Admin;Frau Sekretariat;;;;
                 filtered_df = filtered_df[
                     filtered_df['Erfasst_Von'] != 'Bank-Import'
                 ]
+                # Storno-Buchungen ausblenden
+                filtered_df = filtered_df[
+                    ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
+                ]
+
+                filtered_df = filtered_df[
+                    ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
+                ]
                 gruppen = (
                     filtered_df.groupby(
                         ['Zeitstempel', 'Beschreibung', 'Erfasst_Von'],
