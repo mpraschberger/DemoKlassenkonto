@@ -3742,6 +3742,8 @@ Admin;Frau Sekretariat;;;;
                         st.stop()
 
                         df_buch.loc[orig_idx, "Status"] = "Storniert"
+                        st.error("ICH BIN VOR DEM UPDATE")
+                        st.stop()
 
                         conn.update(
                             worksheet="Buchungen",
