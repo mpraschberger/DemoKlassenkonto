@@ -3744,6 +3744,8 @@ Admin;Frau Sekretariat;;;;
                             data=df_buch
                         )
 
+                        storno_liste = []
+
                         
                         for _, buch in gruppe.iterrows():
 
