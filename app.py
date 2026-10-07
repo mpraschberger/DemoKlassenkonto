@@ -791,11 +791,11 @@ def save_buchung_batch(neue_buchungen_df):
             df_in['BuchungsHash'] = [compute_buchung_hash(r) for r in df_in.to_dict(orient='records')]
 
         try:
-            ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
-            header = ws.row_values(1)
-            if not header:
-                header = list(df_in.columns)
-                ws.append_row(header, value_input_option='USER_ENTERED')
+            # ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
+            # header = ws.row_values(1)
+            # if not header:
+            #     header = list(df_in.columns)
+            #     ws.append_row(header, value_input_option='USER_ENTERED')
 
             if 'BuchungsHash' not in header:
                 header = header + ['BuchungsHash']
