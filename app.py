@@ -3750,10 +3750,10 @@ Admin;Frau Sekretariat;;;;
                             data=df_buch
                         )
 
-                        storno_liste = []
+                                                storno_liste = []
 
                         for _, buch in gruppe.iterrows():
-                        
+
                             storno_liste.append({
                                 "Datum": datetime.today().strftime("%Y-%m-%d"),
                                 "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -3764,8 +3764,8 @@ Admin;Frau Sekretariat;;;;
                                 "Erfasst_Von": user_name,
                                 "Status": "Erledigt"
                             })
-                        
-                       ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
+
+                        ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
 
                         ws.append_rows(
                             pd.DataFrame(storno_liste).astype(str).values.tolist(),
