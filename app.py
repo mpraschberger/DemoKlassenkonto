@@ -3728,13 +3728,7 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
-                        mask = (
-                            (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
-                            (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
-                            (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von'])
-                        )
-
-                        df_buch.loc[mask, 'Status'] = 'Storniert'
+                        
 
                         conn.update(
                             worksheet="Buchungen",
@@ -3743,30 +3737,28 @@ Admin;Frau Sekretariat;;;;
                         # Originalbuchungen als storniert markieren
                         orig_idx = gruppe.index.tolist()
 
-                    df_buch.loc[orig_idx, "Status"] = "Storniert"
-                    
-                    st.error("ICH BIN VOR DEM UPDATE")
-                    st.stop()
-                    
-                    conn.update(
-                        worksheet="Buchungen",
-                        data=df_buch
-                    )
-                    
-                    storno_liste = []
-                    
-                    for _, buch in gruppe.iterrows():
-                    
-                        storno_liste.append({
-                            "Datum": datetime.today().strftime("%Y-%m-%d"),
-                            "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            "ID": buch["ID"],
-                            "Name": buch["Name"],
-                            "Beschreibung": f"Storno: {buch['Beschreibung']}",
-                            "Betrag": float(buch["Betrag"]) * -1,
-                            "Erfasst_Von": user_name,
-                            "Status": "Erledigt"
-                        })
+                        df_buch.loc[orig_idx, "Status"] = "Storniert"
+
+                        conn.update(
+                            worksheet="Buchungen",
+                            data=df_buch
+                        )
+
+                        storno_liste = []
+
+                        for _, buch in gruppe.iterrows():
+
+                            storno_liste.append({
+                                "Datum": datetime.today().strftime("%Y-%m-%d"),
+                                "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                "ID": buch["ID"],
+                                "Name": buch["Name"],
+                                "Beschreibung": f"Storno: {buch['Beschreibung']}",
+                                "Betrag": float(buch["Betrag"]) * -1,
+                                "Erfasst_Von": user_name,
+                                "Status": "Erledigt"
+                            })
+
 
                         ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
 
