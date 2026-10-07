@@ -305,6 +305,10 @@ def check_secrets():
     if missing: st.error(f"Fehlende Secrets: {missing}"); st.stop()
 
 check_secrets()
+st.write(type(conn))
+st.write(dir(conn))
+st.stop()
+
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # -----------------------------------------------------------------------------
