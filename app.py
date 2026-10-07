@@ -3731,10 +3731,7 @@ Admin;Frau Sekretariat;;;;
                         ]
                         
 
-                        conn.update(
-                            worksheet="Buchungen",
-                            data=df_buch
-                        )
+                        
                         # Originalbuchungen als storniert markieren
                         
                         df_buch.loc[gruppe.index, "Status"] = "Storniert"
