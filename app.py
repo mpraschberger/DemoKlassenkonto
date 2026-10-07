@@ -1660,7 +1660,7 @@ def render_centered_login():
                                 b = b.sort_values('Datum', ascending=False)
                                 b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
                                 def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
-                                st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
+                                st.dataframe(b[['Datum','Betrag', 'Beschreibung']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
                                 
                             else:
                                 st.info("Keine Umsätze.")
