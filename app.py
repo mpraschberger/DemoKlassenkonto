@@ -3728,18 +3728,15 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
-                        mask = (
-                            (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
-                            (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
-                            (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von'])
+                        st.write("Gefundene Datensätze:", len(gruppe))
+                        st.dataframe(
+                            gruppe[['ID','Name','Beschreibung','Betrag']]
                         )
-
-df_buch.loc[mask, 'Status'] = 'Storniert'
-
-conn.update(
-    worksheet="Buchungen",
-    data=df_buch
-)
+                        st.stop()
+                        if gruppe.empty:
+                            st.error("Keine passenden Buchungen gefunden!")
+                            st.stop()
+                       
                         # Originalbuchungen als storniert markieren
                         orig_idx = gruppe.index.tolist()
 
