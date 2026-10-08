@@ -2168,7 +2168,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 if valid_key not in st.session_state:
                     st.session_state[valid_key] = float(amt_map.get(sid, row.get('Betrag €', 0.0)) or 0.0)
 
-                c_sel, c_name, c_amt, c_saldo = st.columns([0.5, .5, 1.2, 1.1])
+                c_sel, c_name, c_amt, c_saldo = st.columns([0.4, 3.5, 1.3, 1.0])
                 with c_sel:
                     ausgew = st.checkbox("", key=sel_key, label_visibility="collapsed")
                 with c_name:
