@@ -1797,6 +1797,7 @@ def render_open_payout_notice():
             f"mit insgesamt {offene_summe:.2f} €"
         )
 
+      
         
     except Exception:
         # Hinweis darf die App nicht blockieren.
