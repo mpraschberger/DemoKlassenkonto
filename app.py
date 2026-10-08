@@ -25,8 +25,8 @@ page_title="Klassenkonto",
     layout="wide", 
     page_icon="💶",
     initial_sidebar_state="collapsed"
-)
 
+)
 # App URL für Infotexte / QR Codes
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
@@ -2168,7 +2168,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 if valid_key not in st.session_state:
                     st.session_state[valid_key] = float(amt_map.get(sid, row.get('Betrag €', 0.0)) or 0.0)
 
-                c_sel, c_name, c_amt, c_saldo = st.columns([0.4, 3.5, 1.3, 1.0])
+                c_sel, c_name, c_amt, c_saldo = st.columns([0.5, .5, 1.2, 1.1])
                 with c_sel:
                     ausgew = st.checkbox("", key=sel_key, label_visibility="collapsed")
                 with c_name:
@@ -2226,11 +2226,12 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
         }
         disabled_cols = ['Schüler', 'Saldo €', 'Betrag €']
 
-        _render_manual_header()
-
-        manual_rows.extend(
-            _render_manual_rows(df_view)
-        )
+        mid = len(df_view) // 2 + 1
+        col_l, col_r = st.columns(2)
+        with col_l:
+            ed1 = st.data_editor(df_view.iloc[:mid], column_config=cfg, hide_index=True, disabled=disabled_cols, key=ed_key_l, use_container_width=True, height=520)
+        with col_r:
+            ed2 = st.data_editor(df_view.iloc[mid:], column_config=cfg, hide_index=True, disabled=disabled_cols, key=ed_key_r, use_container_width=True, height=520)
 
         edited = pd.concat([ed1, ed2], ignore_index=True)
 
