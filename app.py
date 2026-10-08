@@ -1773,6 +1773,13 @@ def render_open_payout_notice():
         df_open["Status"] = df_open["Status"].astype(str).str.strip()
 
         offene = df_open[(df_open["Betrag"] < 0) & (df_open["Status"] != "Erledigt")].copy()
+        grp = offene.groupby(
+            ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An'],
+            dropna=False
+        ).agg(
+            Anzahl=('ID', 'count'),
+            Gesamtbetrag=('Betrag', 'sum')
+        ).reset_index()
         if user_role == "Lehrer":
             offene = offene[offene["Erfasst_Von"].astype(str).str.strip() == str(user_name).strip()].copy()
             zieltext = "für dich"
@@ -1785,7 +1792,8 @@ def render_open_payout_notice():
 
         offene_summe = abs(float(offene["Betrag"].sum()))
         st.warning(
-            f"⚠️ {len(grp)} offene Sammelbuchungen "
+            f"⚠️ Es sind {zieltext} noch "
+            f"{len(grp)} offene Sammelbuchungen "
             f"mit insgesamt {offene_summe:.2f} €"
         )
 
