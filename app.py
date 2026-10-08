@@ -24,6 +24,7 @@ st.set_page_config(
     page_title="🧪 DEMO Klassenkonto",
     page_icon="🧪"
 )
+
 # App URL für Infotexte / QR Codes
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
