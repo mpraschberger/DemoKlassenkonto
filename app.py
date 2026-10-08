@@ -8,7 +8,6 @@ import io
 import base64
 import time
 import random
-import string
 import math
 import hashlib
 import os
@@ -22,9 +21,9 @@ from fpdf import FPDF
 # 1. KONFIGURATION & SETUP
 # -----------------------------------------------------------------------------
 st.set_page_config(
-page_title="🧪DEMO_Klassenkonto", 
+page_title="Klassenkonto", 
     layout="wide", 
-    page_icon="🧪",
+    page_icon="💶",
     initial_sidebar_state="collapsed"
 
 )
@@ -32,21 +31,6 @@ page_title="🧪DEMO_Klassenkonto",
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
 if APP_URL.endswith("/"): APP_URL = APP_URL[:-1]
-st.error("🚧 DEMO-SYSTEM – KEINE ECHTEN DATEN")
-
-st.markdown("""
-<div style="
-background:#b71c1c;
-color:white;
-padding:15px;
-font-size:30px;
-font-weight:bold;
-text-align:center;
-margin-bottom:15px;
-">
-🧪 DEMO-SYSTEM • ALLE DATEN SIND TESTDATEN
-</div>
-""", unsafe_allow_html=True)
 
 
 
@@ -77,25 +61,24 @@ def inject_premium_ui_css():
   --kk-input: rgba(255,255,255,.92);
   --kk-input-focus: rgba(46, 125, 255, .20);
 }
-/*
+
 @media (prefers-color-scheme: dark) {
   :root {
     --kk-border: rgba(255,255,255,0.14);
     --kk-border-strong: rgba(255,255,255,0.22);
-    --kk-text: #31333f;
-    --kk-muted: #6b7280;
-    --kk-bg: #eef1f5;
-    --kk-card: rgba(255,255,255,.97);
+    --kk-text: rgba(255,255,255,0.92);
+    --kk-muted: rgba(255,255,255,0.62);
+    --kk-bg: #0e1117;
+    --kk-card: rgba(22, 27, 34, .82);
     --kk-accent: #7aa7ff;
     --kk-accent2: #42e7c6;
     --kk-danger: #ff6b6b;
     --kk-success: #39d98a;
     --kk-warning: #ffd166;
-    --kk-input: rgba(255,255,255,.96);
-    --kk-input-focus: rgba(122,167,255,.22);
+    --kk-input: rgba(16, 20, 26, .86);
+    --kk-input-focus: rgba(122, 167, 255, .22);
   }
 }
-*/
 
 /* Background */
 [data-testid="stAppViewContainer"] {
@@ -215,19 +198,6 @@ section[data-testid="stSidebar"] > div {
 }
 .kk-logo-img { width: 120px; height: auto; display:block; margin: 0 auto; }
 .kk-brand { display:flex; flex-direction:column; align-items:center; width:100%; }
-/* DEMO: dunkle Schrift erzwingen */
-html, body,
-p, span, label, div,
-h1, h2, h3, h4, h5, h6,
-.stMarkdown,
-[data-testid="stMarkdownContainer"],
-[data-testid="stSidebar"],
-[data-testid="stRadio"],
-[data-testid="stCheckbox"],
-[data-testid="stText"],
-[data-testid="stSelectbox"] {
-    color: #31333f !important;
-}
 </style>
         """,
         unsafe_allow_html=True,
@@ -305,8 +275,6 @@ def check_secrets():
     if missing: st.error(f"Fehlende Secrets: {missing}"); st.stop()
 
 check_secrets()
-
-
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # -----------------------------------------------------------------------------
@@ -789,11 +757,11 @@ def save_buchung_batch(neue_buchungen_df):
             df_in['BuchungsHash'] = [compute_buchung_hash(r) for r in df_in.to_dict(orient='records')]
 
         try:
-            # ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
-            # header = ws.row_values(1)
-            # if not header:
-            #     header = list(df_in.columns)
-            #     ws.append_row(header, value_input_option='USER_ENTERED')
+            ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
+            header = ws.row_values(1)
+            if not header:
+                header = list(df_in.columns)
+                ws.append_row(header, value_input_option='USER_ENTERED')
 
             if 'BuchungsHash' not in header:
                 header = header + ['BuchungsHash']
@@ -1589,153 +1557,142 @@ def render_centered_login():
                         st.error("❌ Passwort stimmt nicht. Tipp: Groß-/Kleinschreibung prüfen.")
                 else:
                     st.error("❌ Diese E-Mail ist nicht registriert.")
-        with tab_fam:
-            st.markdown(
-                '<span class="kk-pill">🔑 Zugangscode (Eltern)</span>',
-                unsafe_allow_html=True
-            )
 
+
+
+        with tab_fam:
+            st.markdown("<span class='kk-pill'>🔑 Zugangscode (Eltern)</span>", unsafe_allow_html=True)
             try:
                 url_code = st.query_params.get("code", "")
             except Exception:
                 url_code = ""
-
             c = url_code if url_code else ""
+            ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password", placeholder="Zugangscode")
 
-            ic = st.text_input(
-                "Bitte Zugangscode eingeben:",
-                value=c,
-                type="password",
-                placeholder="Zugangscode"
-            )
             if ic:
-                    # Fehlversuchs-Sperre (Brute-Force-Schutz)
-                    locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
-                    if locked:
-                        st.warning(f"Zu viele Fehlversuche. Bitte {rem} Sekunden warten.")
-                        st.stop()
-                    if 'Zugangscode' in df_stamm.columns:
-                        clean_code = ic.strip()
-                    
-                        r = df_stamm[df_stamm['Zugangscode']==clean_code]
-                        
-                        if not r.empty:
-                            d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
-                            fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
-                            
+                # Fehlversuchs-Sperre (Brute-Force-Schutz)
+                locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
+                if locked:
+                    st.warning(f"Zu viele Fehlversuche. Bitte {rem} Sekunden warten.")
+                    st.stop()
+                clean_code = ic.strip()
+                if 'Zugangscode' in df_stamm.columns:
+                    r = df_stamm[df_stamm['Zugangscode'] == clean_code]
+                    if not r.empty:
+                        d = r.iloc[0]
+                        student_name = d.get('Name', '')
+                        student_class = d.get('Klasse', '')
+                        fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
 
-                            if not df_klassen.empty:
-                                msg_row = df_klassen[df_klassen['Klasse'] == student_class]
-                                if not msg_row.empty:
-                                    msg_text = str(msg_row.iloc[0]['Nachricht'])
-                                    if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
-                            
-                            sv=str(d['ID']).replace(".0","").strip().upper()
-                            b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
-                            
-                            sal = b['Betrag'].sum() if not b.empty else 0.0
-                            col_delta = "normal" if sal >= 0 else "inverse"
+                        if not df_klassen.empty:
+                            msg_row = df_klassen[df_klassen['Klasse'] == student_class]
+                            if not msg_row.empty:
+                                msg_text = str(msg_row.iloc[0].get('Nachricht', ''))
+                                if msg_text and msg_text != "nan":
+                                    st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
 
-                            st.metric(
-                                "Guthaben",
-                                f"{sal:.2f} €",
-                                delta_color=col_delta
-                            )
-                            
-                            if not df_klassen.empty:
-                                
-                                
-                                k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
-                                if not kr.empty:
-                                    iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
-                                    empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
-                                    if iban:
-                                        if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
-                                        else: amount_qr = 0.00
-                                        st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
-                                        qr_text = f"{sv} {d['Name']}"
-                                        qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
-                                        if qr_buffer: st.image(qr_buffer, width=200)
-                            if not b.empty:
+                        sv = str(d.get('ID', '')).replace(".0", "").strip().upper()
+                        b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID'] == sv].copy() if sv else pd.DataFrame()
 
-                                b = b.sort_values('Datum', ascending=False)
-                                b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
+                        sal = 0.0
+                        if not b.empty:
+                            sal = b['Betrag'].sum()
 
-                                def col(v):
-                                    return f'color: {"#d9534f" if v < 0 else "#28a745"}; font-weight: bold'
+                        col_delta = "normal" if sal >= 0 else "inverse"
+                        st.metric("Guthaben", f"{sal:.2f} €", delta_color=col_delta)
 
-                                st.dataframe(
-                                    b[['Datum','Betrag','Beschreibung']]
-                                    .style.map(col, subset=['Betrag'])
-                                    .format({"Betrag":"{:.2f} €"}),
-                                    column_config={
-                                        "Datum": st.column_config.TextColumn(
-                                            "Datum",
-                                            width="small"
-                                        ),
-                                        "Betrag": st.column_config.TextColumn(
-                                            "Betrag",
-                                            width="small"
-                                        ),
-                                        "Beschreibung": st.column_config.TextColumn(
-                                            "Beschreibung",
-                                            width="large"
-                                        ),
-                                    },
-                                    hide_index=True,
-                                    use_container_width=True
-                                )
+                        # QR-Code
+                        if not df_klassen.empty:
+                            kr = df_klassen[df_klassen['Klasse'] == student_class]
+                            if not kr.empty:
+                                iban = kr.iloc[0].get('IBAN', '')
+                                st.write(f"IBAN: {iban}")
+                                bic = kr.iloc[0].get('BIC', '') if 'BIC' in kr.columns else ""
+                                empf = kr.iloc[0].get('Empfaenger', '') if 'Empfaenger' in kr.columns else ""
 
-                            else:
-                                st.info("Keine Umsätze.")
+                                if not empf or str(empf) == "nan":
+                                    empf = "MS Niederndorf"
 
-                            if not df_klassen.empty:
-                                k = d['Klasse']
-                                
+                                if iban:
+                                    amount_qr = abs(sal) if sal < 0 else 0.00
 
-                                kr = df_klassen[df_klassen['Klasse'] == k]
-                                
+                                    if sal < 0:
+                                        st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €")
 
-                                if not kr.empty:
-                                    iban = kr.iloc[0]['IBAN']
-                                    bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
-                                    empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+                                    st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
 
-                                    pdf_bytes = create_pdf_report(
-                                        d['Name'],
-                                        d['Klasse'],
-                                        b,
+                                    qr_text = f"{sv} {student_name}"
+                                    qr_buffer = generate_epc_qr(
                                         iban,
                                         bic,
                                         empf,
-                                        sv
+                                        amount_qr,
+                                        qr_text
                                     )
+
+                                    if qr_buffer:
+                                        st.image(qr_buffer, width=200)
+
+                        if not b.empty:
+
+                            b = b.sort_values('Datum', ascending=False)
+                            b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
+                            def col(v):
+                                return f'color: {"#ff6b6b" if v < 0 else "#39d98a"}; font-weight: bold'
+                            st.dataframe(
+                                b[['Datum', 'Betrag', 'Beschreibung']]
+                                .style.map(col, subset=['Betrag'])
+                                .format({"Betrag": "{:.2f} €"}),
+                                column_config={
+                                    "Datum": st.column_config.TextColumn(
+                                        "Datum",
+                                        width="small"
+                                    ),
+                                    "Betrag": st.column_config.TextColumn(
+                                        "Betrag",
+                                        width="small"
+                                    ),
+                                    "Beschreibung": st.column_config.TextColumn(
+                                        "Beschreibung",
+                                        width="large"
+                                    ),
+                                },
+                                hide_index=True,
+                                use_container_width=True,
+                            )
+                        else:
+                            st.info("Keine Umsätze.")
+
+                            # PDF
+                            if not df_klassen.empty:
+                                kr = df_klassen[df_klassen['Klasse'] == student_class]
+                                if not kr.empty:
+                                    iban = kr.iloc[0].get('IBAN', '')
+                                    bic = kr.iloc[0].get('BIC', '') if 'BIC' in kr.columns else ""
+                                    empf = kr.iloc[0].get('Empfaenger', '') if 'Empfaenger' in kr.columns else ""
+                                    if not empf or str(empf) == "nan":
+                                        empf = "MS Niederndorf"
+                                    pdf_bytes = create_pdf_report(student_name, student_class, b, iban, bic, empf, sv)
                                 else:
-                                    pdf_bytes = create_pdf_report(
-                                        d['Name'],
-                                        d['Klasse'],
-                                        b
-                                    )
+                                    pdf_bytes = create_pdf_report(student_name, student_class, b)
                             else:
-                                pdf_bytes = create_pdf_report(
-                                    d['Name'],
-                                    d['Klasse'],
-                                    b
-                                )
+                                pdf_bytes = create_pdf_report(student_name, student_class, b)
 
                             st.download_button(
                                 "📄 Kontoauszug (PDF)",
                                 data=pdf_bytes,
-                                file_name=f"Kontoauszug_{d['Name']}.pdf",
-                                mime='application/pdf'
+                                file_name=f"Kontoauszug_{student_name}.pdf",
+                                mime='application/pdf',
                             )
+                        
+                    else:
+                        fam_register_fail(prefix='fam', max_tries=5, base_lock_s=60); time.sleep(0.6); st.error("Code ungültig.")
+                else:
+                    st.error("Wartung: Datenbankfehler.")
 
-        
-            
-            
+        st.markdown('</div></div>', unsafe_allow_html=True)
 
 
-            
 def render_centered_password_change():
     _l, mid, _r = st.columns([1, 2, 1])
     with mid:
@@ -3665,29 +3622,22 @@ Admin;Frau Sekretariat;;;;
                 filtered_df = filtered_df[
                     filtered_df['Erfasst_Von'] != 'Bank-Import'
                 ]
-                filtered_df = filtered_df[
-                    filtered_df['Status'].astype(str).str.strip() != "Storniert"
-                ]
-                # Storno-Buchungen ausblenden
-                filtered_df = filtered_df[
-                    ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
-                ]
-
-                filtered_df = filtered_df[
-                    ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
-                ]
-                storno_beschreibungen = (
-                    filtered_df[
-                        filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
-                    ]['Beschreibung']
-                    .astype(str)
-                    .str.replace("Storno: ", "", regex=False)
-                    .unique()
+                gruppen = (
+                    filtered_df.groupby(
+                        ['Zeitstempel', 'Beschreibung', 'Erfasst_Von'],
+                        dropna=False
+                    )
+                    .agg(
+                        Anzahl=('ID', 'count'),
+                        Gesamtbetrag=('Betrag', 'sum')
+                    )
+                    .reset_index()
+                    .sort_values(
+                        ['Zeitstempel', 'Erfasst_Von'],
+                        ascending=[False, True]
+                    )
                 )
 
-                filtered_df = filtered_df[
-                    ~filtered_df['Beschreibung'].isin(storno_beschreibungen)
-                ]
                 gruppen = (
                     filtered_df.groupby(
                         ['Zeitstempel', 'Beschreibung', 'Erfasst_Von', 'Klasse'],
@@ -3723,49 +3673,22 @@ Admin;Frau Sekretariat;;;;
                         f"mit {row_to_cancel['Anzahl']} Einträgen "
                         f"wirklich stornieren?"
                     )
-                    st.error("TEST 123456789")
                     if st.button("🚨 JA, stornieren", key="btn_storno"):
                         gruppe = filtered_df[
-                            (filtered_df['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
-                            (filtered_df['Beschreibung'] == row_to_cancel['Beschreibung']) &
-                            (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
-                            (filtered_df['Klasse'] == row_to_cancel['Klasse'])
+                            filtered_df['Zeitstempel'] == row_to_cancel['Zeitstempel']
                         ]
-                        
 
-                        
-                        # Originalbuchungen als storniert markieren
-                        
-                        df_buch.loc[gruppe.index, "Status"] = "Storniert"
-
-                        conn.update(
-                            worksheet="Buchungen",
-                            data=df_buch
-                        )
-
-                        storno_liste = []
-
-                        
                         for _, buch in gruppe.iterrows():
 
-                            storno_liste.append({
-                                "Datum": datetime.today().strftime("%Y-%m-%d"),
-                                "Zeitstempel": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                "ID": buch["ID"],
-                                "Name": buch["Name"],
-                                "Beschreibung": f"Storno: {buch['Beschreibung']}",
-                                "Betrag": float(buch["Betrag"]) * -1,
-                                "Erfasst_Von": user_name,
-                                "Status": "Erledigt"
-                            })
-
-
-                        ws = conn.client.open_by_key(conn.spreadsheet).worksheet('Buchungen')
-
-                        ws.append_rows(
-                            pd.DataFrame(storno_liste).astype(str).values.tolist(),
-                            value_input_option='USER_ENTERED'
-                        )
+                            save_buchung_einzeln(
+                                datetime.today(),
+                                buch['ID'],
+                                buch['Name'],
+                                f"Storno: {buch['Beschreibung']}",
+                                float(buch['Betrag']) * -1,
+                                user_name,
+                                "Erledigt"
+                            )
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
                         time.sleep(1)
@@ -3950,8 +3873,6 @@ Admin;Frau Sekretariat;;;;
 # -----------------------------------------------------------------------------
 if menu == "Familien-Login":
     st.header("👨‍👩‍👧 Familien-Login")
-    
-
     try:
         query_params = st.query_params
         url_code = query_params.get("code", "")
@@ -3959,9 +3880,63 @@ if menu == "Familien-Login":
 
     c = url_code if url_code else ""
     ic = st.text_input("Bitte Zugangscode eingeben:", value=c, type="password")
-   
+    
+    if ic:
+        # Fehlversuchs-Sperre (Brute-Force-Schutz)
+        locked, rem = fam_check_lockout(prefix='fam', max_tries=5, base_lock_s=60)
+        if locked:
+            st.warning(f"Zu viele Fehlversuche. Bitte {rem} Sekunden warten.")
+            st.stop()
+        if 'Zugangscode' in df_stamm.columns:
+            clean_code = ic.strip()
+            r = df_stamm[df_stamm['Zugangscode']==clean_code]
+            if not r.empty:
+                d = r.iloc[0]; student_name = d['Name']; student_class = d['Klasse']
+                fam_reset_lockout(prefix='fam'); st.info(f"Schüler: **{student_name}** ({student_class})")
+                
+                if not df_klassen.empty:
+                    msg_row = df_klassen[df_klassen['Klasse'] == student_class]
+                    if not msg_row.empty:
+                        msg_text = str(msg_row.iloc[0]['Nachricht'])
+                        if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
+                
+                sv=str(d['ID']).replace(".0","").strip().upper()
+                b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
+                
+                if not b.empty:
+                    sal = b['Betrag'].sum(); col_delta = "normal" if sal>=0 else "inverse"
+                    st.metric("Guthaben", f"{sal:.2f} €", delta_color=col_delta)
+                    if not df_klassen.empty:
+                        k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
+                        if not kr.empty:
+                            iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""
+                            empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+                            if iban:
+                                if sal < 0: st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €"); amount_qr = abs(sal)
+                                else: amount_qr = 0.00
+                                st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
+                                qr_text = f"{sv} {d['Name']}"
+                                qr_buffer = generate_epc_qr(iban, bic, empf, amount_qr, qr_text)
+                                if qr_buffer: st.image(qr_buffer, width=200)
+                    
+                    b = b.sort_values('Datum', ascending=False)
+                    b['Datum'] = pd.to_datetime(b['Datum']).dt.strftime(DATE_DISPLAY_FMT)
+                    def col(v): return f'color: {"#d9534f" if v<0 else "#28a745"}; font-weight: bold'
+                    st.dataframe(b[['Datum','Beschreibung','Betrag']].style.map(col, subset=['Betrag']).format({"Betrag":"{:.2f} €"}), hide_index=True, use_container_width=True)
+                    if not df_klassen.empty:
+                        k = d['Klasse']; kr = df_klassen[df_klassen['Klasse'] == k]
+                        if not kr.empty:
+                            iban = kr.iloc[0]['IBAN']; bic = kr.iloc[0]['BIC'] if 'BIC' in kr.columns else ""; empf = kr.iloc[0]['Empfaenger'] if 'Empfaenger' in kr.columns and str(kr.iloc[0]['Empfaenger']) != "nan" else "MS Niederndorf"
+                            pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b, iban, bic, empf, sv)
+                        else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
+                    else: pdf_bytes = create_pdf_report(d['Name'], d['Klasse'], b)
+                    st.download_button("📄 Kontoauszug (PDF)", data=pdf_bytes, file_name=f"Kontoauszug_{d['Name']}.pdf", mime='application/pdf')
+                else: st.info("Keine Umsätze.")
+            else: fam_register_fail(prefix='fam', max_tries=5, base_lock_s=60); time.sleep(0.6); st.error("Code ungültig.")
+        else: st.error("Wartung: Datenbankfehler.")
 
-                       
 st.divider(); st.caption("MS Niederndorf v30.4 (Secure & Private)")
+
+
 
 
