@@ -359,11 +359,11 @@ def sanitize_status_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # -----------------------------------------------------------------------------
-# Datum: einheitliche Anzeige (dd.mm.yyyy)
-DATE_DISPLAY_FMT = "%Y-%m-%d"
+# Datum: einheitliche Anzeige (yyy.mm.dd.)
+DATE_DISPLAY_FMT = "%Y.%m.%d"
 
 def format_date_display(val):
-    """Datum robust für Anzeige formatieren: dd.mm.yyyy (str/datetime/Timestamp)."""
+    """Datum robust für Anzeige formatieren: yyyy.mm.dd.(str/datetime/Timestamp)."""
     try:
         if val is None:
             return ""
@@ -2986,7 +2986,7 @@ Admin;Frau Sekretariat;;;;
             anzeige = grp.copy()
 
             anzeige = anzeige.rename(columns={
-                "Dat": "Anzeige_Datum",
+                "Dat": "Datum",
                 "Erfasst_Von": "Erfasst von",
                 "Ueberweisen_An": "Empfänger",
                 "Name": "Schüler",
@@ -2997,7 +2997,7 @@ Admin;Frau Sekretariat;;;;
                 anzeige[
                     [
                         'Erledigt',
-                        'Anzeige_Datum',
+                        'Datum',
                         'Klasse',
                         'Erfasst von',
                         'Empfänger',
@@ -3022,7 +3022,7 @@ Admin;Frau Sekretariat;;;;
                             if st.button("✅ Verbuchen"):
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
-                                    mask = (df_new['Datum']==r['Anzeige_Datum']) & (df_new['Erfasst_Von']==r['Erfasst von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
+                                    mask = (df_new['Datum']==r['Datum']) & (df_new['Erfasst_Von']==r['Erfasst von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
                                     st.write("Treffer:", mask.sum())
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
