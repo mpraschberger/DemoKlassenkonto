@@ -2986,19 +2986,18 @@ Admin;Frau Sekretariat;;;;
             anzeige = grp.copy()
 
             anzeige = anzeige.rename(columns={
-                "Dat": "Datum",
+                "Dat": "Anzeige_Datum",
                 "Erfasst_Von": "Erfasst von",
                 "Ueberweisen_An": "Empfänger",
                 "Name": "Schüler",
                 "Betrag": "Gesamtbetrag"
             })
-            st.write(anzeige.columns.tolist())
-            st.stop()
+            
             ed = st.data_editor(
                 anzeige[
                     [
                         'Erledigt',
-                        'Datum',
+                        'Anzeige_Datum',
                         'Klasse',
                         'Erfasst von',
                         'Empfänger',
