@@ -21,9 +21,11 @@ from fpdf import FPDF
 # 1. KONFIGURATION & SETUP
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="🧪 DEMO Klassenkonto",
-    page_icon="🧪"
-)
+page_title="Klassenkonto", 
+    layout="wide", 
+    page_icon="💶",
+    initial_sidebar_state="collapsed"
+
 # App URL für Infotexte / QR Codes
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
