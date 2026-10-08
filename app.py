@@ -2132,8 +2132,14 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
 
         st.caption("Manuelle Beträge: Werte werden je Schüler stabil gespeichert. Mit Enter springst du zum nächsten Betragsfeld.")
         manual_rows = []
-        mid = len(df_view) // 2 + 1
-        col_l, col_r = st.columns(2)
+
+        _render_manual_header()
+
+        manual_rows.extend(
+            _render_manual_rows(df_view)
+        )
+
+edited = pd.DataFrame(manual_rows)
 
         def _render_manual_header():
             h_sel, h_name, h_amt, h_saldo = st.columns([0.5, 2.5, 1.2, 1.1])
@@ -2194,12 +2200,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 out.append({'Auswahl': bool(ausgew), 'Schüler': name, 'Betrag €': float(wert), 'Saldo €': saldo, '_id': sid})
             return out
 
-        with col_l:
-            _render_manual_header()
-            manual_rows.extend(_render_manual_rows(df_view.iloc[:mid]))
-        with col_r:
-            _render_manual_header()
-            manual_rows.extend(_render_manual_rows(df_view.iloc[mid:]))
+
 
         edited = pd.DataFrame(manual_rows)
         new_excl = set(edited.loc[edited['Auswahl'] == False, '_id'].astype(str).str.upper().tolist())
@@ -2225,10 +2226,6 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
 
         mid = len(df_view) // 2 + 1
         col_l, col_r = st.columns(2)
-        with col_l:
-            ed1 = st.data_editor(df_view.iloc[:mid], column_config=cfg, hide_index=True, disabled=disabled_cols, key=ed_key_l, use_container_width=True, height=520)
-        with col_r:
-            ed2 = st.data_editor(df_view.iloc[mid:], column_config=cfg, hide_index=True, disabled=disabled_cols, key=ed_key_r, use_container_width=True, height=520)
 
         edited = pd.concat([ed1, ed2], ignore_index=True)
 
