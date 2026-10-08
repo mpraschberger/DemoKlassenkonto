@@ -2992,7 +2992,8 @@ Admin;Frau Sekretariat;;;;
                 "Name": "Schüler",
                 "Betrag": "Gesamtbetrag"
             })
-
+            st.write(anzeige.columns.tolist())
+            st.stop()
             ed = st.data_editor(
                 anzeige[
                     [
