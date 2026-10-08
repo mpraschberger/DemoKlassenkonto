@@ -3022,9 +3022,17 @@ Admin;Frau Sekretariat;;;;
                             if st.button("✅ Verbuchen"):
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
-                                    mask = (df_new['Datum']==r['Anzeige_Datum']) & (df_new['Erfasst_Von']==r['Erfasst von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
+                                    st.write("r Datum:", r['Anzeige_Datum'])
+                                    mask = (df_new['Erfasst_Von']==r['Erfasst von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
+                                    st.write(
+                                        df_new[['Datum','Erfasst_Von','Beschreibung']]
+                                        .head(5)
+                                    )
                                     st.write("Treffer:", mask.sum())
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
+                                    if mask.sum() == 0:
+                                    st.error("Keine Datensätze gefunden!")
+                                    st.stop()
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
         else: st.success("Alles erledigt.")
 
