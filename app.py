@@ -2983,15 +2983,48 @@ Admin;Frau Sekretariat;;;;
             # Aufräumen: interne Sortierspalte aus Anzeige entfernen
             if '_dt' in grp.columns:
                 pass
-            ed = st.data_editor(grp[['Erledigt','Dat','Klasse','Erfasst_Von','Ueberweisen_An','Beschreibung','Betrag','Name','Datum']], column_config={"Erledigt":st.column_config.CheckboxColumn("Überwiesen?"),"Name":st.column_config.NumberColumn("Anzahl Schüler"), "Datum":None}, hide_index=True, use_container_width=True)
+            anzeige = grp.copy()
+
+            anzeige = anzeige.rename(columns={
+                "Dat": "Datum",
+                "Erfasst_Von": "Erfasst von",
+                "Ueberweisen_An": "Empfänger",
+                "Name": "Schüler",
+                "Betrag": "Gesamtbetrag"
+            })
+
+            ed = st.data_editor(
+                anzeige[
+                    [
+                        'Erledigt',
+                        'Datum',
+                        'Klasse',
+                        'Erfasst von',
+                        'Empfänger',
+                        'Beschreibung',
+                        'Schüler',
+                        'Gesamtbetrag'
+                    ]
+                ],
+                column_config={
+                    "Erledigt": st.column_config.CheckboxColumn("Überwiesen?"),
+                    "Schüler": st.column_config.NumberColumn("Anzahl Schüler"),
+                    "Gesamtbetrag": st.column_config.NumberColumn(
+                        "Gesamtbetrag",
+                        format="%.2f €"
+                    )
+                },
+                hide_index=True,
+                use_container_width=True
+            )
             todo = ed[ed['Erledigt']==True]
             if len(todo)>0:
-                if st.button("✅ Verbuchen"):
-                    df_new = df_buch.copy()
-                    for i,r in todo.iterrows():
-                        mask = (df_new['Datum']==r['Datum']) & (df_new['Erfasst_Von']==r['Erfasst_Von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Ueberweisen_An','')) & (df_new['Status']!='Erledigt')
-                        df_new.loc[mask, 'Status'] = 'Erledigt'
-                    update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
+                            if st.button("✅ Verbuchen"):
+                                df_new = df_buch.copy()
+                                for i,r in todo.iterrows():
+                                    mask = (df_new['Datum']==r['Datum']) & (df_new['Erfasst_Von']==r['Erfasst_Von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
+                                    df_new.loc[mask, 'Status'] = 'Erledigt'
+                                update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
         else: st.success("Alles erledigt.")
 
 
