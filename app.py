@@ -3031,8 +3031,8 @@ Admin;Frau Sekretariat;;;;
                                     st.write("Treffer:", mask.sum())
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     if mask.sum() == 0:
-                                    st.error("Keine Datensätze gefunden!")
-                                    st.stop()
+                                        st.error("Keine Datensätze gefunden!")
+                                        st.stop()
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
         else: st.success("Alles erledigt.")
 
