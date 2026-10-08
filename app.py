@@ -1784,12 +1784,12 @@ def render_open_payout_notice():
             return
 
         offene_summe = abs(float(offene["Betrag"].sum()))
-        st.warning(f"⚠️ Hinweis: Es sind {zieltext} noch {len(offene)} offene Auszahlung(en) mit insgesamt {offene_summe:.2f} € nicht als erledigt verbucht.")
+        st.warning(
+            f"⚠️ {len(grp)} offene Sammelbuchungen "
+            f"mit insgesamt {offene_summe:.2f} €"
+        )
 
-        with st.expander("Offene Positionen anzeigen"):
-            zeige_spalten = [c for c in ["Datum", "Name", "Beschreibung", "Betrag", "Ueberweisen_An", "Status", "Erfasst_Von"] if c in offene.columns]
-            offene_anzeige = format_date_columns(offene[zeige_spalten].copy(), cols=["Datum"])
-            st.dataframe(offene_anzeige, use_container_width=True, hide_index=True)
+        
     except Exception:
         # Hinweis darf die App nicht blockieren.
         pass
