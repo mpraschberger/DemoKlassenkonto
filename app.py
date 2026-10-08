@@ -25,6 +25,7 @@ page_title="Klassenkonto",
     layout="wide", 
     page_icon="💶",
     initial_sidebar_state="collapsed"
+)
 
 # App URL für Infotexte / QR Codes
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
