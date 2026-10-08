@@ -1773,6 +1773,15 @@ def render_open_payout_notice():
         df_open["Status"] = df_open["Status"].astype(str).str.strip()
 
         offene = df_open[(df_open["Betrag"] < 0) & (df_open["Status"] != "Erledigt")].copy()
+        if user_role == "Lehrer":
+            offene = offene[
+                offene["Erfasst_Von"].astype(str).str.strip()
+                == str(user_name).strip()
+            ].copy()
+            zieltext = "für dich"
+        else:
+            zieltext = "insgesamt"
+
         grp = offene.groupby(
             ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An'],
             dropna=False
@@ -1780,11 +1789,6 @@ def render_open_payout_notice():
             Anzahl=('ID', 'count'),
             Gesamtbetrag=('Betrag', 'sum')
         ).reset_index()
-        if user_role == "Lehrer":
-            offene = offene[offene["Erfasst_Von"].astype(str).str.strip() == str(user_name).strip()].copy()
-            zieltext = "für dich"
-        else:
-            zieltext = "insgesamt"
 
         if offene.empty:
             st.success(f"✅ Hinweis: Es sind {zieltext} keine offenen Auszahlungen vorhanden. Die offenen Beträge scheinen verbucht/erledigt zu sein.")
@@ -1797,8 +1801,8 @@ def render_open_payout_notice():
             f"mit insgesamt {offene_summe:.2f} €"
         )
 
-      
-        
+
+
     except Exception:
         # Hinweis darf die App nicht blockieren.
         pass
