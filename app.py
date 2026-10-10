@@ -3036,9 +3036,8 @@ Admin;Frau Sekretariat;;;;
                             if st.button("✅ Verbuchen"):
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
-                                    
+                                    st.write(df_new.columns.tolist())
                                     mask = (
-                                        (df_new['Klasse']==r['Klasse']) &
                                         (df_new['Datum']==r['Anzeige_Datum']) &
                                         (df_new['Erfasst_Von']==r['Erfasst von']) &
                                         (df_new['Beschreibung']==r['Beschreibung']) &
