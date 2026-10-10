@@ -3069,9 +3069,16 @@ Admin;Frau Sekretariat;;;;
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
                                     
-                                    mask = (
-                                        (df_new['Beschreibung']==r['Beschreibung']) &
-                                        (df_new['Status']!='Erledigt')
+                                   mask = (
+                                        (df_new['Klasse'] == r['Klasse']) &
+                                        (df_new['Beschreibung'] == r['Beschreibung']) &
+                                        (df_new['Status'] != 'Erledigt')
+                                    )
+                                    st.write(
+                                        "Klasse:",
+                                        r['Klasse'],
+                                        "Treffer:",
+                                        mask.sum()
                                     )
                                    
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
