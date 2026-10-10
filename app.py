@@ -3774,6 +3774,7 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
                         st.error(f"GRUPPE: {len(gruppe)}")
+                        st.error("VOR SCHLEIFE")
 
 
                         for _, buch in gruppe.iterrows():
@@ -3788,6 +3789,8 @@ Admin;Frau Sekretariat;;;;
                                 user_name,
                                 "Erledigt"
                             )
+                        st.error("NACH SCHLEIFE")
+
 
                         mask = (
                             (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
@@ -3798,8 +3801,7 @@ Admin;Frau Sekretariat;;;;
 
                         st.error(f"MASK TREFFER: {mask.sum()}")
 
-                        st.write("Storno-Treffer:", mask.sum())
-                        df_buch.loc[mask, 'Status'] = 'Storniert'
+                        
 
                         conn.update(
                             worksheet="Buchungen",
