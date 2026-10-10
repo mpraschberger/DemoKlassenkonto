@@ -2789,6 +2789,8 @@ Admin;Frau Sekretariat;;;;
                                                     'Zeitstempel': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                             
                                                     'ID': str(this_id).upper(),
+
+                                                    'Klasse': curr_klasse,
                                             
                                                     'Name': curr_name,
                                             
@@ -3263,11 +3265,16 @@ Admin;Frau Sekretariat;;;;
                     check_key = f"{sv_str}_{date_str}_{amt}_{desc_str}"
                     student_match = df_stamm[df_stamm['ID'] == sv_str]
                     student_name = student_match.iloc[0]['Name'] if not student_match.empty else "⚠️ UNBEKANNT"
+                    student_class = (
+                        student_match.iloc[0]['Klasse']
+                        if not student_match.empty
+                        else ""
+                    )
                     is_duplicate = check_key in existing_keys
                     if is_duplicate:
                         duplicates_count += 1; status_icon = "🔁 BEREITS GEBUCHT"
                     else:
-                        new_unique_bookings.append({"Datum": format_date_display(row['Datum']),"Zeitstempel": row['Zeitstempel'],"ID": sv_str,"Name": student_name if student_name != "⚠️ UNBEKANNT" else "Unbekannt","Beschreibung": row['Beschreibung'],"Betrag": row['Betrag'],"Erfasst_Von": "Bank-Import","Status": "Erledigt"})
+                        new_unique_bookings.append({"Datum": format_date_display(row['Datum']),"Zeitstempel": row['Zeitstempel'],"ID": sv_str,"Name": student_name if student_name != "⚠️ UNBEKANNT" else "Unbekannt","Klasse": student_class,"Beschreibung": row['Beschreibung'],"Betrag": row['Betrag'],"Erfasst_Von": "Bank-Import","Status": "Erledigt"})
                         status_icon = "✅ NEU"
                     preview_list.append({"Status": status_icon,"Datum": format_date_display(row['Datum']),"Name": student_name,"Betrag": row['Betrag'],"Beschreibung": row['Beschreibung']})
                 st.divider(); st.markdown(f"### 📊 Analyse-Ergebnis")
