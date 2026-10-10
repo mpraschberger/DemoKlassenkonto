@@ -3702,6 +3702,11 @@ Admin;Frau Sekretariat;;;;
         st.subheader("🛠️ Administration & Wartung")
         if not df_buch.empty:
             log_df = df_buch.merge(df_stamm[['ID', 'Klasse']], on='ID', how='left')
+            if 'Klasse_x' in log_df.columns and 'Klasse_y' in log_df.columns:
+                log_df['Klasse'] = log_df['Klasse_x'].fillna(log_df['Klasse_y'])
+
+            elif 'Klasse_y' in log_df.columns:
+                log_df['Klasse'] = log_df['Klasse_y']
             log_df = log_df.sort_values('Zeitstempel', ascending=False)
         else: log_df = pd.DataFrame()
 
