@@ -3766,12 +3766,15 @@ Admin;Frau Sekretariat;;;;
                         f"wirklich stornieren?"
                     )
                     if st.button("🚨 JA, stornieren", key="btn_storno"):
+                        st.error("STORNO START")
                         gruppe = filtered_df[
                             (filtered_df['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
                             (filtered_df['Beschreibung'] == row_to_cancel['Beschreibung']) &
                             (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
+                        st.error(f"GRUPPE: {len(gruppe)}")
+``
 
                         for _, buch in gruppe.iterrows():
 
