@@ -3065,20 +3065,26 @@ Admin;Frau Sekretariat;;;;
             )
             todo = ed[ed['Erledigt']==True]
             if len(todo)>0:
-                            if st.button("✅ Verbuchen"):
-                                df_new = df_buch.copy()
-                                for i,r in todo.iterrows():
-                                    
-                                   mask = (
-                                        (df_new['Klasse'] == r['Klasse']) &
-                                        (df_new['Beschreibung'] == r['Beschreibung']) &
-                                        (df_new['Status'] != 'Erledigt')
-                                    )
-                                                                       
-                                    df_new.loc[mask, 'Status'] = 'Erledigt'
-                                    
-                                update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
-        else: st.success("Alles erledigt.")
+                if st.button("✅ Verbuchen"):
+                    df_new = df_buch.copy()
+                    for i,r in todo.iterrows():
+                        
+                        mask = (
+                            (df_new['Klasse'] == r['Klasse']) &
+                            (df_new['Beschreibung'] == r['Beschreibung']) &
+                            (df_new['Status'] != 'Erledigt')
+                        )
+                        st.write(
+                            "Klasse:",
+                            r['Klasse'],
+                            "Treffer:",
+                            mask.sum()
+                        )
+                        
+                        df_new.loc[mask, 'Status'] = 'Erledigt'
+                        
+                    update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
+            else: st.success("Alles erledigt.")
 
 
     elif s_menu in ["Umsatzsuche", "Auswertungen", "Umsatzsuche"]:
