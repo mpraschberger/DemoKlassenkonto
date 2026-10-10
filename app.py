@@ -3074,12 +3074,7 @@ Admin;Frau Sekretariat;;;;
                             (df_new['Beschreibung'] == r['Beschreibung']) &
                             (df_new['Status'] != 'Erledigt')
                         )
-                        st.write(
-                            "Klasse:",
-                            r['Klasse'],
-                            "Treffer:",
-                            mask.sum()
-                        )
+                        
                         
                         df_new.loc[mask, 'Status'] = 'Erledigt'
                         
