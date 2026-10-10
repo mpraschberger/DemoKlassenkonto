@@ -3774,7 +3774,7 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
                         st.error(f"GRUPPE: {len(gruppe)}")
-``
+
 
                         for _, buch in gruppe.iterrows():
 
