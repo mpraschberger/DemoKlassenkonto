@@ -3796,6 +3796,8 @@ Admin;Frau Sekretariat;;;;
                             (df_buch['Klasse'] == row_to_cancel['Klasse'])
                         )
 
+                        st.error(f"MASK TREFFER: {mask.sum()}")
+
                         st.write("Storno-Treffer:", mask.sum())
                         df_buch.loc[mask, 'Status'] = 'Storniert'
 
