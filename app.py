@@ -3036,13 +3036,20 @@ Admin;Frau Sekretariat;;;;
                             if st.button("✅ Verbuchen"):
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
-                                    
+                                    st.write(r)
                                     mask = (
                                         (df_new['Beschreibung']==r['Beschreibung']) &
                                         (df_new['Status']!='Erledigt')
                                     )
 
-                                    st.write("Treffer:", mask.sum())
+                                    test = df_new[
+                                        df_new['Beschreibung']==r['Beschreibung']
+                                    ]
+
+                                    st.write(
+                                        test[['Datum','ID','Name','Beschreibung','Erfasst_Von','Ueberweisen_An']]
+                                        .head(20)
+                                    )
 
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
