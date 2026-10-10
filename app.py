@@ -3074,13 +3074,7 @@ Admin;Frau Sekretariat;;;;
                                         (df_new['Beschreibung'] == r['Beschreibung']) &
                                         (df_new['Status'] != 'Erledigt')
                                     )
-                                    st.write(
-                                        "Klasse:",
-                                        r['Klasse'],
-                                        "Treffer:",
-                                        mask.sum()
-                                    )
-                                   
+                                                                       
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
