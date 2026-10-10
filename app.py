@@ -27,6 +27,7 @@ page_title="Klassenkonto",
     initial_sidebar_state="collapsed"
 
 )
+
 # App URL für Infotexte / QR Codes
 FALLBACK_URL = "https://klassenkonto-app-mbm47r42x2muagq3jhzaxg.streamlit.app" 
 APP_URL = st.secrets.get("app_url", FALLBACK_URL)
@@ -2181,7 +2182,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 if valid_key not in st.session_state:
                     st.session_state[valid_key] = float(amt_map.get(sid, row.get('Betrag €', 0.0)) or 0.0)
 
-                c_sel, c_name, c_amt, c_saldo = st.columns([0.4, 3.5, 1.3, 1.0])
+                c_sel, c_name, c_amt, c_saldo = st.columns([0.5, .5, 1.2, 1.1])
                 with c_sel:
                     ausgew = st.checkbox("", key=sel_key, label_visibility="collapsed")
                 with c_name:
@@ -3672,21 +3673,16 @@ Admin;Frau Sekretariat;;;;
                 filtered_df = filtered_df[
                     filtered_df['Erfasst_Von'] != 'Bank-Import'
                 ]
-                gruppen = (
-                    filtered_df.groupby(
-                        ['Zeitstempel', 'Beschreibung', 'Erfasst_Von'],
-                        dropna=False
-                    )
-                    .agg(
-                        Anzahl=('ID', 'count'),
-                        Gesamtbetrag=('Betrag', 'sum')
-                    )
-                    .reset_index()
-                    .sort_values(
-                        ['Zeitstempel', 'Erfasst_Von'],
-                        ascending=[False, True]
-                    )
-                )
+                # Nur offene Positionen dürfen storniert werden
+                filtered_df = filtered_df[
+                    filtered_df['Status'].astype(str).str.strip() == 'Offen'
+                ]
+
+                # Storno-Buchungen ausblenden
+                filtered_df = filtered_df[
+                    ~filtered_df['Beschreibung'].astype(str).str.startswith("Storno:")
+                ]
+                
 
                 gruppen = (
                     filtered_df.groupby(
@@ -3725,7 +3721,10 @@ Admin;Frau Sekretariat;;;;
                     )
                     if st.button("🚨 JA, stornieren", key="btn_storno"):
                         gruppe = filtered_df[
-                            filtered_df['Zeitstempel'] == row_to_cancel['Zeitstempel']
+                            (filtered_df['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
+                            (filtered_df['Beschreibung'] == row_to_cancel['Beschreibung']) &
+                            (filtered_df['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
+                            (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
 
                         for _, buch in gruppe.iterrows():
@@ -3740,9 +3739,25 @@ Admin;Frau Sekretariat;;;;
                                 "Erledigt"
                             )
 
+                        mask = (
+                            (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
+                            (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
+                            (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
+                            (df_buch['Klasse'] == row_to_cancel['Klasse'])
+                        )
+
+                        df_buch.loc[mask, 'Status'] = 'Storniert'
+
+                        conn.update(
+                            worksheet="Buchungen",
+                            data=df_buch
+                        )
+
                         st.success(f"{len(gruppe)} Buchungen storniert!")
                         time.sleep(1)
                         st.rerun()
+
+                        
             else: st.info("Keine Buchungen vorhanden.")
 
         with col_codes:
