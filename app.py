@@ -2076,7 +2076,11 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 )
 
     excluded = set(str(x).strip().upper() for x in st.session_state[key_sel])
-    selected = sorted(list(all_ids - excluded))
+    selected = [
+    sid
+    for sid in df_class['ID'].astype(str).str.strip().str.upper().tolist()
+    if sid not in excluded
+    ]
 
     # 8) Auto-Verteilung
     if dist_mode == "Gesamtsumme aufteilen":
