@@ -3037,8 +3037,13 @@ Admin;Frau Sekretariat;;;;
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
                                     
-                                    mask = (df_new['Erfasst_Von']==r['Erfasst von']) & (df_new['Beschreibung']==r['Beschreibung']) & (df_new.get('Ueberweisen_An','')==r.get('Empfänger','')) & (df_new['Status']!='Erledigt')
-                                    
+                                    mask = (
+                                        (df_new['Klasse']==r['Klasse']) &
+                                        (df_new['Datum']==r['Anzeige_Datum']) &
+                                        (df_new['Erfasst_Von']==r['Erfasst von']) &
+                                        (df_new['Beschreibung']==r['Beschreibung']) &
+                                        (df_new['Status']!='Erledigt')
+                                    )
                                     
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
