@@ -805,9 +805,30 @@ def save_buchung_batch(neue_buchungen_df):
         return False
 
 
-def save_buchung_einzeln(datum, id_val, name, text, betrag, user, status="Erledigt", ueberweisen_an=""):
+def save_buchung_einzeln(
+    datum,
+    id_val,
+    name,
+    klasse,
+    text,
+    betrag,
+    user,
+    status="Erledigt",
+    ueberweisen_an=""
+):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    entry = {"Datum": datum.strftime("%Y-%m-%d"), "Zeitstempel": now, "ID": str(id_val).upper(), "Name": name, "Beschreibung": text, "Betrag": float(betrag), "Erfasst_Von": user, "Ueberweisen_An": ueberweisen_an, "Status": status}
+    entry = {
+        "Datum": datum.strftime("%Y-%m-%d"),
+        "Zeitstempel": now,
+        "ID": str(id_val).upper(),
+        "Name": name,
+        "Klasse": klasse,
+        "Beschreibung": text,
+        "Betrag": float(betrag),
+        "Erfasst_Von": user,
+        "Ueberweisen_An": ueberweisen_an,
+        "Status": status
+    }
     return save_buchung_batch(pd.DataFrame([entry]))
 
 def update_buchungs_status(df_updated):
@@ -2665,7 +2686,7 @@ elif menu == "Admin" and user_role == "Admin":
                                 st.success(f"✅ {name_neu} erfolgreich angelegt!")
                                 # Optional: Startbetrag als Einzahlung buchen
                                 if rolle_neu == 'Schüler' and float(startbetrag or 0) > 0.009 and next_id:
-                                    ok_b = save_buchung_einzeln(datetime.today(), next_id, name_neu, 'Startbetrag (Anlage)', float(startbetrag), user_name, 'Erledigt')
+                                    ok_b = save_buchung_einzeln(datetime.today(), next_id, name_neu, klasse_neu, 'Startbetrag (Anlage)', float(startbetrag), user_name, 'Erledigt')
                                     if ok_b:
                                         st.info(f"Startbetrag gebucht: {float(startbetrag):.2f} €")
                                 if next_id: st.info(f"ID: {next_id}")
@@ -3036,12 +3057,12 @@ Admin;Frau Sekretariat;;;;
                             if st.button("✅ Verbuchen"):
                                 df_new = df_buch.copy()
                                 for i,r in todo.iterrows():
-                                    st.write(r)
+                                    
                                     mask = (
                                         (df_new['Beschreibung']==r['Beschreibung']) &
                                         (df_new['Status']!='Erledigt')
                                     )
-                                    st.write("Anzahl Datensätze:", len(tmp))
+                                   
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
@@ -3735,6 +3756,7 @@ Admin;Frau Sekretariat;;;;
                                 datetime.today(),
                                 buch['ID'],
                                 buch['Name'],
+                                buch['Klasse'],
                                 f"Storno: {buch['Beschreibung']}",
                                 float(buch['Betrag']) * -1,
                                 user_name,
