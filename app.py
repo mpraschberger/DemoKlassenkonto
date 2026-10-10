@@ -3781,7 +3781,7 @@ Admin;Frau Sekretariat;;;;
                             st.error(
                                 f"{buch['Name']} | {buch['Klasse']} | {buch['Beschreibung']}"
                             )
-
+                        try:
                             save_buchung_einzeln(
                                 datetime.today(),
                                 buch['ID'],
@@ -3792,7 +3792,9 @@ Admin;Frau Sekretariat;;;;
                                 user_name,
                                 "Erledigt"
                             )
-                        st.error("BUCHUNG GESPEICHERT")
+                            st.error("BUCHUNG GESPEICHERT")
+                        except Exception as e:
+                            st.error(f"STORNO FEHLER: {e}")
 
 
                         mask = (
