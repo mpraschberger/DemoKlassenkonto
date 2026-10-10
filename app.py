@@ -3797,21 +3797,21 @@ Admin;Frau Sekretariat;;;;
                             st.error(f"STORNO FEHLER: {e}")
 
 
-                        mask = (
-                            (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
-                            (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
-                            (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
-                            (df_buch['Klasse'] == row_to_cancel['Klasse'])
-                        )
+                        # mask = (
+                        #     (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
+                        #     (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
+                        #     (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
+                        #     (df_buch['Klasse'] == row_to_cancel['Klasse'])
+                        # )
 
-                        st.error(f"MASK TREFFER: {mask.sum()}")
+                        # st.error(f"MASK TREFFER: {mask.sum()}")
 
                         
 
-                        conn.update(
-                            worksheet="Buchungen",
-                            data=df_buch
-                        )
+                        # conn.update(
+                        #     worksheet="Buchungen",
+                        #     data=df_buch
+                        # )
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
                         time.sleep(1)
