@@ -3038,12 +3038,10 @@ Admin;Frau Sekretariat;;;;
                                 for i,r in todo.iterrows():
                                     
                                     mask = (
-                                        (df_new['Datum']==r['Anzeige_Datum']) &
-                                        (df_new['Erfasst_Von']==r['Erfasst von']) &
                                         (df_new['Beschreibung']==r['Beschreibung']) &
-                                        (df_new['Ueberweisen_An']==r['Empfänger']) &
                                         (df_new['Status']!='Erledigt')
                                     )
+
                                     st.write("Treffer:", mask.sum())
 
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
