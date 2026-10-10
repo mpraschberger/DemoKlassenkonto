@@ -3050,6 +3050,14 @@ Admin;Frau Sekretariat;;;;
                                         test[['Datum','ID','Name','Beschreibung','Erfasst_Von','Ueberweisen_An']]
                                         .head(20)
                                     )
+                                    tmp = df_new[
+                                        (df_new['Beschreibung'] == r['Beschreibung']) &
+                                        (df_new['Erfasst_Von'] == r['Erfasst von'])
+                                    ]
+
+                                    st.dataframe(
+                                        tmp[['ID','Name','Beschreibung','Erfasst_Von','Ueberweisen_An','Status']]
+                                    )
 
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
