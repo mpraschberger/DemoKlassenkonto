@@ -3041,24 +3041,7 @@ Admin;Frau Sekretariat;;;;
                                         (df_new['Beschreibung']==r['Beschreibung']) &
                                         (df_new['Status']!='Erledigt')
                                     )
-
-                                    test = df_new[
-                                        df_new['Beschreibung']==r['Beschreibung']
-                                    ]
-
-                                    st.write(
-                                        test[['Datum','ID','Name','Beschreibung','Erfasst_Von','Ueberweisen_An']]
-                                        .head(20)
-                                    )
-                                    tmp = df_new[
-                                        (df_new['Beschreibung'] == r['Beschreibung']) &
-                                        (df_new['Erfasst_Von'] == r['Erfasst von'])
-                                    ]
-
-                                    st.dataframe(
-                                        tmp[['ID','Name','Beschreibung','Erfasst_Von','Ueberweisen_An','Status']]
-                                    )
-
+                                    st.write("Anzahl Datensätze:", len(tmp))
                                     df_new.loc[mask, 'Status'] = 'Erledigt'
                                     
                                 update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
