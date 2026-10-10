@@ -3778,6 +3778,9 @@ Admin;Frau Sekretariat;;;;
 
 
                         for _, buch in gruppe.iterrows():
+                            st.error(
+                                f"{buch['Name']} | {buch['Klasse']} | {buch['Beschreibung']}"
+                            )
 
                             save_buchung_einzeln(
                                 datetime.today(),
@@ -3789,7 +3792,7 @@ Admin;Frau Sekretariat;;;;
                                 user_name,
                                 "Erledigt"
                             )
-                        st.error("NACH SCHLEIFE")
+                        st.error("BUCHUNG GESPEICHERT")
 
 
                         mask = (
