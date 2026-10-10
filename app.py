@@ -3041,7 +3041,7 @@ Admin;Frau Sekretariat;;;;
                                         (df_new['Datum']==r['Anzeige_Datum']) &
                                         (df_new['Erfasst_Von']==r['Erfasst von']) &
                                         (df_new['Beschreibung']==r['Beschreibung']) &
-                                        (df_new['Status']!='Erledigt')
+                                        (df_new['Status']!='Erledigt') &
                                         (df_new['Ueberweisen_An']==r['Empfänger'])
                                     )
                                     
