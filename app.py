@@ -1206,6 +1206,7 @@ def perform_jahreswechsel(df_buch, df_stamm, action_map: dict, max_grade: int = 
                     'Zeitstempel': now_ts,
                     'ID': sv,
                     'Name': name_map.get(sv, 'Unbekannt'),
+                    'Klasse': class_map.get(sv, ''),
                     'Beschreibung': 'Übertrag Vorjahr',
                     'Betrag': float(row['Betrag']),
                     'Erfasst_Von': 'System',
@@ -2229,7 +2230,14 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                 if not ausgew:
                     wert = 0.0
 
-                out.append({'Auswahl': bool(ausgew), 'Schüler': name, 'Betrag €': float(wert), 'Saldo €': saldo, '_id': sid})
+                out.append({
+                    'Klasse': row['Klasse'],
+                    'Auswahl': bool(ausgew),
+                    'Schüler': name,
+                    'Betrag €': float(wert),
+                    'Saldo €': saldo,
+                    '_id': sid
+                })
             return out
 
         with col_l:
@@ -2309,6 +2317,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
                         'Zeitstempel': now_ts,
                         'ID': sid,
                         'Name': name,
+                        'Klasse': row['Klasse'],
                         'Beschreibung': text_val,
                         'Betrag': float(val),
                         'Erfasst_Von': user_name,
