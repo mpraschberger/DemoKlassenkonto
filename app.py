@@ -3046,6 +3046,23 @@ Admin;Frau Sekretariat;;;;
                 "Name": "Schüler",
                 "Betrag": "Gesamtbetrag"
             })
+            st.markdown("""
+            <style>
+            /* Klasse */
+            [data-testid="stDataEditor"] tbo*y td:nth-child(2) {
+                text-align: center !important;
+            }
+
+            /* Betrag */
+            [data-testid="stDataEditor"] tbody td:nth-child(4) {
+                te*t-align: center !important;
+            }
+
+            /* SuS */
+            [data-testid="stDataEditor"]*tbody td:nth-child(5) {
+                text-a*ign: center !important;
+            }
+            </style>*""", unsafe_allow_html=True)
             
             ed = st.data_editor(
                 anzeige[
