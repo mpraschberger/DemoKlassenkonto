@@ -3821,24 +3821,33 @@ Admin;Frau Sekretariat;;;;
                         ]
                         
                         for _, buch in gruppe.iterrows():
-                            st.error(
-                                f"{buch['Name']} | {buch['Klasse']} | {buch['Beschreibung']}"
-                            )
-                        try:
-                            save_buchung_einzeln(
-                                datetime.today(),
-                                buch['ID'],
-                                buch['Name'],
-                                buch['Klasse'],
-                                f"Storno: {buch['Beschreibung']}",
-                                float(buch['Betrag']) * -1,
-                                user_name,
-                                "Erledigt"
-                            )
                             
-                        except Exception as e:
-                            st.error(f"STORNO FEHLER: {e}")
-                           
+                       
+                            try:
+                                save_buchung_einzeln(
+                                    datetime.today(),
+                                    buch['ID'],
+                                    buch['Name'],
+                                    buch['Klasse'],
+                                    f"Storno: {buch['Beschreibung']}",
+                                    float(buch['Betrag']) * -1,
+                                    user_name,
+                                    "Erledigt"
+                                )
+
+                            except Exception as e:
+                                st.error(f"STORNO FEHLER: {e}")
+
+                        mask = (
+                            (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
+                            (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
+                            (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
+                            (df_buch['Klasse'] == row_to_cancel['Klasse'])
+                        )
+                        st.error(f"MASK TREFFER: {mask.sum()}")
+
+                        df_buch.loc[mask, 'Status'] = 'Storniert'
+                                                
 
 
                         # mask = (
