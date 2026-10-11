@@ -3061,13 +3061,47 @@ Admin;Frau Sekretariat;;;;
                     ]
                 ],
                 column_config={
-                    "Erledigt": st.column_config.CheckboxColumn("Überwiesen?"),
-                    "Schüler": st.column_config.NumberColumn("Anzahl Schüler"),
+                    "Erledigt": st.column_config.CheckboxColumn(
+                        "Überwiesen?"
+                    ),
+
+                    "Klasse": st.column_config.TextColumn(
+                        "Klasse",
+                        width="small"
+                    ),
+
+                    "Beschreibung": st.column_config.TextColumn(
+                        "Beschreibung",
+                        width="large"
+                    ),
+
+                    "Schüler": st.column_config.NumberColumn(
+                        "Anzahl Schüler",
+                        width="small"
+                    ),
+
                     "Gesamtbetrag": st.column_config.NumberColumn(
                         "Gesamtbetrag",
-                        format="%.2f €"
-                    )
+                        format="%.2f €",
+                        width="small"
+                    ),
+
+                    "Anzeige_Datum": st.column_config.TextColumn(
+                        "Datum",
+                        width="small"
+                    ),
+
+                    "Empfänger": st.column_config.TextColumn(
+                        "Empfänger",
+                        width="small"
+                    ),
+
+                    "Erfasst von": st.column_config.TextColumn(
+                        "Erfasst von",
+                        width="small"
+                    ),
                 },
+                
                 hide_index=True,
                 use_container_width=True
             )
