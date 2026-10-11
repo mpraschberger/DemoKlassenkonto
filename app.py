@@ -3101,8 +3101,8 @@ Admin;Frau Sekretariat;;;;
                 hide_index=True,
                 use_container_width=True
             )
-            st.write(ed[['Erledigt']].head(20))
-            st.write(ed[['Klasse','Beschreibung','Erledigt']])
+            st.write(ed.dtypes)
+            st.write(ed['Erledigt'].unique())
             
             todo = ed[ed['Erledigt']==True]
 
