@@ -3033,6 +3033,10 @@ Admin;Frau Sekretariat;;;;
             # Aufräumen: interne Sortierspalte aus Anzeige entfernen
             if '_dt' in grp.columns:
                 pass
+            grp = grp.sort_values(
+                ['Beschreibung', 'Klasse'],
+                ascending=[True, True]
+            )
             anzeige = grp.copy()
 
             anzeige = anzeige.rename(columns={
@@ -3047,13 +3051,13 @@ Admin;Frau Sekretariat;;;;
                 anzeige[
                     [
                         'Erledigt',
-                        'Anzeige_Datum',
-                        'Klasse',
-                        'Erfasst von',
-                        'Empfänger',
                         'Beschreibung',
+                        'Klasse',
                         'Schüler',
-                        'Gesamtbetrag'
+                        'Gesamtbetrag',
+                        'Empfänger',
+                        'Erfasst von',
+                        'Anzeige_Datum'
                     ]
                 ],
                 column_config={
