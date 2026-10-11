@@ -3799,6 +3799,7 @@ Admin;Frau Sekretariat;;;;
                             )
                             
                         except Exception as e:
+                            st.error(f"STORNO FEHLER: {e}")
                            
 
 
