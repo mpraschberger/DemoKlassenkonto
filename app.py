@@ -3100,7 +3100,7 @@ Admin;Frau Sekretariat;;;;
                         "Erfasst",
                         width="small"
                     ),
-                }
+                },
                 
                 hide_index=True,
                 use_container_width=True
