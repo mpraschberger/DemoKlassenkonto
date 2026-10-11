@@ -3061,6 +3061,10 @@ Admin;Frau Sekretariat;;;;
                     ]
                 ],
                 column_config={
+                    "Erledigt": st.column_config.CheckboxColumn(
+                        "✓",
+                        default=False
+                    ),
                     "Klasse": st.column_config.TextColumn(
                         "Kl.",
                         width="small"
@@ -3101,12 +3105,11 @@ Admin;Frau Sekretariat;;;;
                 hide_index=True,
                 use_container_width=True
             )
-            st.write(ed.dtypes)
-            st.write(ed['Erledigt'].unique())
+            
             
             todo = ed[ed['Erledigt']==True]
 
-            st.write("Anzahl markiert:", len(todo))
+            
             if len(todo)>0:
                 if st.button("✅ Verbuchen"):
                     df_new = df_buch.copy()
