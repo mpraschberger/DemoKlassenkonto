@@ -3034,7 +3034,7 @@ Admin;Frau Sekretariat;;;;
             if '_dt' in grp.columns:
                 pass
             grp = grp.sort_values(
-                ['Beschreibung', 'Klasse'],
+                ['Klasse', 'Beschreibung'],
                 ascending=[True, True]
             )
             anzeige = grp.copy()
