@@ -3125,7 +3125,7 @@ Admin;Frau Sekretariat;;;;
                         df_new.loc[mask, 'Status'] = 'Erledigt'
                         
                     update_buchungs_status(df_new); st.success("Erledigt!"); time.sleep(1); st.rerun()
-            else: st.success("Alles erledigt.")
+            
 
 
     elif s_menu in ["Umsatzsuche", "Auswertungen", "Umsatzsuche"]:
