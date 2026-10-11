@@ -3051,13 +3051,13 @@ Admin;Frau Sekretariat;;;;
                 anzeige[
                     [
                         'Erledigt',
-                        'Beschreibung',
                         'Klasse',
-                        'Schüler',
+                        'Beschreibung',
                         'Gesamtbetrag',
+                        'Schüler',
+                        'Anzeige_Datum',
                         'Empfänger',
-                        'Erfasst von',
-                        'Anzeige_Datum'
+                        'Erfasst von'
                     ]
                 ],
                 column_config={
