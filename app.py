@@ -3061,23 +3061,19 @@ Admin;Frau Sekretariat;;;;
                     ]
                 ],
                 column_config={
-                    "Erledigt": st.column_config.CheckboxColumn(
-                        "✓"
-                    ),
-
                     "Klasse": st.column_config.TextColumn(
                         "Kl.",
                         width="small"
                     ),
 
-                    "Beschreibung": st.column_config.TextColumn(
-                        "Beschreibung",
-                        width="large"
-                    ),
-
                     "Schüler": st.column_config.NumberColumn(
                         "SuS",
                         width="small"
+                    ),
+
+                    "Beschreibung": st.column_config.TextColumn(
+                        "Beschreibung",
+                        width="medium"
                     ),
 
                     "Gesamtbetrag": st.column_config.NumberColumn(
@@ -3092,12 +3088,12 @@ Admin;Frau Sekretariat;;;;
                     ),
 
                     "Empfänger": st.column_config.TextColumn(
-                        "Empfänger",
+                        "Empf.",
                         width="small"
                     ),
 
                     "Erfasst von": st.column_config.TextColumn(
-                        "Erfasst",
+                        "Von",
                         width="small"
                     ),
                 },
