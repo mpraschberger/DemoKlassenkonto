@@ -3046,24 +3046,7 @@ Admin;Frau Sekretariat;;;;
                 "Name": "Schüler",
                 "Betrag": "Gesamtbetrag"
             })
-            st.markdown("""
-            <style>
-            /* Klasse */
-            [data-testid="stDataEditor"] tbo*y td:nth-child(2) {
-                text-align: center !important;
-            }
-
-            /* Betrag */
-            [data-testid="stDataEditor"] tbody td:nth-child(4) {
-                te*t-align: center !important;
-            }
-
-            /* SuS */
-            [data-testid="stDataEditor"]*tbody td:nth-child(5) {
-                text-a*ign: center !important;
-            }
-            </style>*""", unsafe_allow_html=True)
-            
+                        
             ed = st.data_editor(
                 anzeige[
                     [
@@ -3118,7 +3101,11 @@ Admin;Frau Sekretariat;;;;
                 hide_index=True,
                 use_container_width=True
             )
+            st.write(ed[['Klasse','Beschreibung','Erledigt']])
+            
             todo = ed[ed['Erledigt']==True]
+
+            st.write("Anzahl markiert:", len(todo))
             if len(todo)>0:
                 if st.button("✅ Verbuchen"):
                     df_new = df_buch.copy()
