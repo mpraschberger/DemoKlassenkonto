@@ -1806,7 +1806,7 @@ def render_open_payout_notice():
             zieltext = "insgesamt"
 
         grp = offene.groupby(
-            ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An'],
+            ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An', 'Klasse'],
             dropna=False
         ).agg(
             Anzahl=('ID', 'count'),
