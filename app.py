@@ -3820,23 +3820,33 @@ Admin;Frau Sekretariat;;;;
                             (filtered_df['Klasse'] == row_to_cancel['Klasse'])
                         ]
                         
-                        for _, buch in gruppe.iterrows():
-                            
+                                                   
                        
-                            try:
-                                save_buchung_einzeln(
-                                    datetime.today(),
-                                    buch['ID'],
-                                    buch['Name'],
-                                    buch['Klasse'],
-                                    f"Storno: {buch['Beschreibung']}",
-                                    float(buch['Betrag']) * -1,
-                                    user_name,
-                                    "Erledigt"
-                                )
+                        try:
+                            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                            except Exception as e:
-                                st.error(f"STORNO FEHLER: {e}")
+                            storno_rows = []
+
+                            for _, buch in gruppe.iterrows():
+
+                                storno_rows.append({
+                                    "Datum": datetime.today().strftime("%Y-%m-%d"),
+                                    "Zeitstempel": now,
+                                    "ID": str(buch['ID']).upper(),
+                                    "Name": buch['Name'],
+                                    "Klasse": buch['Klasse'],
+                                    "Beschreibung": f"Storno: {buch['Beschreibung']}",
+                                    "Betrag": float(buch['Betrag']) * -1,
+                                    "Erfasst_Von": user_name,
+                                    "Ueberweisen_An": "",
+                                    "Status": "Erledigt"
+                                })
+                            st.write("Stornozeilen:", len(storno_rows))
+
+                            save_buchung_batch(pd.DataFrame(storno_rows))
+
+                        except Exception as e:
+                            st.error(f"STORNO FEHLER: {e}")
 
                         mask = (
                             (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
@@ -3870,8 +3880,8 @@ Admin;Frau Sekretariat;;;;
                         # )
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
-                        time.sleep(1)
-                        st.rerun()
+                        # time.sleep(1)
+                        # st.rerun()
 
                         
             else: st.info("Keine Buchungen vorhanden.")
