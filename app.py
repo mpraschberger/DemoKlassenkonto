@@ -4097,7 +4097,7 @@ if menu == "Familien-Login":
                         if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
                 
                 st.error("ELTERNANSICHT GEFUNDEN")
-``
+
                 
                 sv=str(d['ID']).replace(".0","").strip().upper()
                 b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
