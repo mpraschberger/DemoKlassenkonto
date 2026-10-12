@@ -750,19 +750,6 @@ def save_buchung_batch(neue_buchungen_df):
             return True
 
         df_in = neue_buchungen_df.copy()
-
-        if 'Datum' not in df_in.columns:
-            st.error("Fehler: Spalte 'Datum' fehlt.")
-            return False
-
-        invalid = (
-            df_in['Datum'].isna()
-            | df_in['Datum'].astype(str).str.strip().isin(['', 'None', 'nan'])
-        )
-
-        if invalid.any():
-            st.error("Mindestens eine Buchung hat kein Datum.")
-            return False
         if 'BuchungsHash' not in df_in.columns:
             df_in['BuchungsHash'] = ''
         try:
