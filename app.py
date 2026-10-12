@@ -3860,6 +3860,10 @@ Admin;Frau Sekretariat;;;;
 
                         st.write("Zeilen in df_buch:", len(df_buch))
                         st.write("Mask Treffer:", mask.sum())
+
+                        ok = update_buchungs_status(df_buch)
+
+                        st.write("Status gespeichert:", ok)
                                                 
 
 
