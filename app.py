@@ -3847,6 +3847,9 @@ Admin;Frau Sekretariat;;;;
                         st.error(f"MASK TREFFER: {mask.sum()}")
 
                         df_buch.loc[mask, 'Status'] = 'Storniert'
+
+                        st.write("Zeilen in df_buch:", len(df_buch))
+                        st.write("Mask Treffer:", mask.sum())
                                                 
 
 
