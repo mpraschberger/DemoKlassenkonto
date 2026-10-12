@@ -3841,7 +3841,6 @@ Admin;Frau Sekretariat;;;;
                                     "Ueberweisen_An": "",
                                     "Status": "Erledigt"
                                 })
-                            st.write("Stornozeilen:", len(storno_rows))
 
                             save_buchung_batch(pd.DataFrame(storno_rows))
 
@@ -3854,16 +3853,12 @@ Admin;Frau Sekretariat;;;;
                             (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
                             (df_buch['Klasse'] == row_to_cancel['Klasse'])
                         )
-                        st.error(f"MASK TREFFER: {mask.sum()}")
 
                         df_buch.loc[mask, 'Status'] = 'Storniert'
 
-                        st.write("Zeilen in df_buch:", len(df_buch))
-                        st.write("Mask Treffer:", mask.sum())
 
                         ok = update_buchungs_status(df_buch)
 
-                        st.write("Status gespeichert:", ok)
                                                 
 
 
@@ -4097,6 +4092,8 @@ if menu == "Familien-Login":
                 
                 sv=str(d['ID']).replace(".0","").strip().upper()
                 b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
+
+                b = b[b['Status'] != 'Storniert']
                 
                 if not b.empty:
                     sal = b['Betrag'].sum(); col_delta = "normal" if sal>=0 else "inverse"
