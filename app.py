@@ -1616,6 +1616,7 @@ def render_centered_login():
 
                         sv = str(d.get('ID', '')).replace(".0", "").strip().upper()
                         b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID'] == sv].copy() if sv else pd.DataFrame()
+                        
                         if not b.empty and 'Status' in b.columns:
                             b = b[b['Status'].astype(str).str.strip() != 'Storniert']
 
@@ -3865,28 +3866,14 @@ Admin;Frau Sekretariat;;;;
 
                         ok = update_buchungs_status(df_buch)
 
-                                                
-
-
-                        # mask = (
-                        #     (df_buch['Zeitstempel'] == row_to_cancel['Zeitstempel']) &
-                        #     (df_buch['Beschreibung'] == row_to_cancel['Beschreibung']) &
-                        #     (df_buch['Erfasst_Von'] == row_to_cancel['Erfasst_Von']) &
-                        #     (df_buch['Klasse'] == row_to_cancel['Klasse'])
-                        # )
-
-                        # st.error(f"MASK TREFFER: {mask.sum()}")
-
-                        
-
-                        # conn.update(
-                        #     worksheet="Buchungen",
-                        #     data=df_buch
-                        # )
+                      
+                        if not ok:
+                            st.error("Status konnte nicht gespeichert werden.")
+                            st.stop()
 
                         st.success(f"{len(gruppe)} Buchungen storniert!")
-                        # time.sleep(1)
-                        # st.rerun()
+                        time.sleep(1)
+                        st.rerun()
 
                         
             else: st.info("Keine Buchungen vorhanden.")
