@@ -1661,7 +1661,11 @@ def render_centered_login():
                                     )
 
                                     if qr_buffer:
-                                        st.image(qr_buffer, width=200)
+                                        left, center, right = st.columns([1, 2, 1])
+
+                                        with center:
+                                            st.image(qr_buffer, width=200)
+
 
                         if not b.empty:
 
