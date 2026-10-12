@@ -1647,7 +1647,7 @@ def render_centered_login():
                                     amount_qr = abs(sal) if sal < 0 else 0.00
 
                                     if sal < 0:
-                                        st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €")
+                                        st.error(f"⚠️ Aktueller Fehlbetrag: {abs(sal):.2f} €")
 
                                     st.write("Der QR-Code kann jederzeit für Einzahlungen auf das Klassenkonto verwendet werden.")
 
