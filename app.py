@@ -1616,6 +1616,12 @@ def render_centered_login():
 
                         sv = str(d.get('ID', '')).replace(".0", "").strip().upper()
                         b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID'] == sv].copy() if sv else pd.DataFrame()
+                        if not b.empty and 'Status' in b.columns:
+                            b = b[b['Status'].astype(str).str.strip() != 'Storniert']
+
+                        sal = 0.0
+                        if not b.empty:
+                            sal = b['Betrag'].sum()
 
                         sal = 0.0
                         if not b.empty:
@@ -4089,6 +4095,9 @@ if menu == "Familien-Login":
                     if not msg_row.empty:
                         msg_text = str(msg_row.iloc[0]['Nachricht'])
                         if msg_text and msg_text != "nan": st.warning(f"📢 Nachricht von der Schule:\n\n{msg_text}")
+                
+                st.error("ELTERNANSICHT GEFUNDEN")
+``
                 
                 sv=str(d['ID']).replace(".0","").strip().upper()
                 b = _get_buchungen_lazy()[_get_buchungen_lazy()['ID']==sv].copy()
