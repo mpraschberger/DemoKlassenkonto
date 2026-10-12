@@ -1636,7 +1636,7 @@ def render_centered_login():
                             kr = df_klassen[df_klassen['Klasse'] == student_class]
                             if not kr.empty:
                                 iban = kr.iloc[0].get('IBAN', '')
-                                st.write(f"IBAN: {iban}")
+                                # st.write(f"IBAN: {iban}")
                                 bic = kr.iloc[0].get('BIC', '') if 'BIC' in kr.columns else ""
                                 empf = kr.iloc[0].get('Empfaenger', '') if 'Empfaenger' in kr.columns else ""
 
@@ -1649,7 +1649,7 @@ def render_centered_login():
                                     if sal < 0:
                                         st.warning(f"Aktueller Fehlbetrag: {abs(sal):.2f} €")
 
-                                    st.write("Scannen Sie diesen Code mit Ihrer Banking-App für eine einfache Überweisung.")
+                                    st.write("Der QR-Code kann jederzeit für Einzahlungen auf das Klassenkonto verwendet werden.")
 
                                     qr_text = f"{sv} {student_name}"
                                     qr_buffer = generate_epc_qr(
