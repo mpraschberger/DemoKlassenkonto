@@ -522,7 +522,7 @@ def parse_csv_elba(uploaded_file):
                     status = "DOPPELTE ID"
 
                 elif len(id_matches) > 1:
-                    status = "MEHRDEUTIG"
+                    status = "2 IDs GEFUNDEN"
 
                 else:
                     status = None
@@ -3347,6 +3347,19 @@ Admin;Frau Sekretariat;;;;
         if uploaded_file is not None:
             df_import = parse_csv_elba(uploaded_file)
             if not df_import.empty:
+                invalid_count = 0
+
+                if 'Status' in df_import.columns:
+                    invalid_count = len(
+                        df_import[
+                            df_import['Status'].isin([
+                                'ID FEHLT',
+                                'DOPPELTE ID',
+                                '2 IDs GEFUNDEN',
+                                'SCHÜLER NICHT GEFUNDEN'
+                            ])
+                        ]
+                    )
                 existing_keys = set()
                 for _, row in df_buch.iterrows():
                     try:
@@ -3362,14 +3375,17 @@ Admin;Frau Sekretariat;;;;
                     student_match = df_stamm[df_stamm['ID'] == sv_str]
 
                     if student_match.empty:
+                        invalid_count += 1
+
                         preview_list.append({
-                            "Status": "❌ UNBEKANNT",
+                            "Status": "❌ SCHÜLER NICHT GEFUNDEN",
                             "Datum": format_date_display(row['Datum']),
                             "Name": "⚠️ UNBEKANNT",
                             "Betrag": round(float(row['Betrag']), 2),
                             "Beschreibung": row['Beschreibung']
                         })
                         continue
+
 
                     student_name = student_match.iloc[0]['Name']
                     student_class = student_match.iloc[0]['Klasse']
@@ -3381,10 +3397,13 @@ Admin;Frau Sekretariat;;;;
                         status_icon = "✅ NEU"
                     preview_list.append({"Status": status_icon,"Datum": format_date_display(row['Datum']),"Name": student_name,"Betrag": row['Betrag'],"Beschreibung": row['Beschreibung']})
                 st.divider(); st.markdown(f"### 📊 Analyse-Ergebnis")
-                c1, c2, c3 = st.columns(3)
+                c1, c2, c3, c4 = st.columns(4)
+
                 c1.metric("Zeilen in CSV", len(df_import))
-                c2.metric("Davon Duplikate", duplicates_count, delta_color="off")
-                c3.metric("Neue Buchungen", len(new_unique_bookings), delta_color="normal")
+                c2.metric("Duplikate", duplicates_count, delta_color="off")
+                c3.metric("Ungültig", invalid_count, delta_color="off")
+                c4.metric("Neu", len(new_unique_bookings), delta_color="normal")
+
                 st.caption("Vorschau der Analyse:")
                 df_preview = pd.DataFrame(preview_list)
                 def color_status(val): return f'color: {"#d9534f" if "BEREITS" in val else "#28a745"}; font-weight: bold'
