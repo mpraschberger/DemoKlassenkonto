@@ -3342,9 +3342,7 @@ Admin;Frau Sekretariat;;;;
     # --- BANK IMPORT ---
     elif s_menu == "Bank-Import":
         st.subheader("🏦 Bank Import (ELBA CSV)")
-        if "bank_import_msg" in st.session_state:
-            st.success(st.session_state["bank_import_msg"])
-            del st.session_state["bank_import_msg"]
+        
         st.info("Laden Sie hier die .csv Datei aus dem Online-Banking hoch.")
         uploaded_file = st.file_uploader("CSV Datei hier hineinziehen", type=["csv"], key="bank_csv_upload")
         if uploaded_file is not None:
@@ -3412,17 +3410,20 @@ Admin;Frau Sekretariat;;;;
                     col_btn, _ = st.columns([1, 3])
 
                     if col_btn.button(
-                        f"🚀 {len(new_unique_bookings)} neue Buchungen importieren",
+                        f"🚀 {len(new_unique_bookings)} neue Buchungen importieren", 
                         type="primary"
                     ):
                         if save_buchung_batch(pd.DataFrame(new_unique_bookings)):
 
-                            st.session_state["bank_import_msg"] = (
+                            st.success(
                                 f"✅ Import erfolgreich! "
                                 f"{len(new_unique_bookings)} Buchungen importiert."
                             )
 
+                            time.sleep(1)
+
                             st.rerun()
+
 
                 elif duplicates_count > 0 and len(new_unique_bookings) == 0:
                     st.success(
