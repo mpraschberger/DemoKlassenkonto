@@ -3369,7 +3369,14 @@ Admin;Frau Sekretariat;;;;
                     amt = round(float(row['Betrag']), 2); date_str = str(row['Datum']).strip()
                     sv_str = str(row['ID']).strip().upper(); desc_str = str(row['Beschreibung']).strip()
                     check_key = f"{sv_str}_{date_str}_{amt}_{desc_str}"
-                    student_match = df_stamm[df_stamm['ID'] == sv_str]
+                    student_match = df_stamm[
+                        df_stamm['ID']
+                        .astype(str)
+                        .str.replace('.0', '', regex=False)
+                        .str.strip()
+                        .str.upper()
+                        == sv_str
+                    ]
 
                     if student_match.empty:
                         invalid_count += 1
