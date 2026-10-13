@@ -511,6 +511,9 @@ def parse_csv_elba(uploaded_file):
                 amount_val = float(amount_str)
                 
                 id_matches = re.findall(r'\b(?:\d{4}[A-Z0-9]{6}|[A-Z]{3,5}\d{4,6}|[A-Z]{4}\d{6}|\d{5,10})\b', raw_text.upper())
+                st.write("TEXT:", raw_text)
+                st.write("MATCHES:", id_matches)
+
                 
                 if abs(amount_val) <= 0.001:
                     continue
