@@ -511,20 +511,14 @@ def parse_csv_elba(uploaded_file):
                 amount_val = float(amount_str)
                 
                 id_matches = re.findall(r'\b(?:\d{4}[A-Z0-9]{6}|[A-Z]{3,5}\d{4,6}|[A-Z]{4}\d{6}|\d{5,10})\b', raw_text.upper())
-                st.write("TEXT:", raw_text)
-                st.write("MATCHES:", id_matches)
-
-                
                 if abs(amount_val) <= 0.001:
                     continue
+                unique_matches = list(set(id_matches))
 
-                if len(id_matches) == 0:
+                if len(unique_matches) == 0:
                     status = "ID FEHLT"
 
-                elif len(id_matches) > 1 and len(set(id_matches)) == 1:
-                    status = "DOPPELTE ID"
-
-                elif len(id_matches) > 1:
+                elif len(unique_matches) > 1:
                     status = "2 IDs GEFUNDEN"
 
                 else:
@@ -548,7 +542,7 @@ def parse_csv_elba(uploaded_file):
 
                 now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                found_id = id_matches[0]
+                found_id = unique_matches[0]
 
                 parsed.append({
                     "ID": found_id.upper(),
