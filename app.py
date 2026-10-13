@@ -3422,8 +3422,6 @@ Admin;Frau Sekretariat;;;;
                                 f"{len(new_unique_bookings)} Buchungen importiert."
                             )
 
-                            st.session_state["bank_csv_upload"] = None
-
                             st.rerun()
 
                 elif duplicates_count > 0 and len(new_unique_bookings) == 0:
