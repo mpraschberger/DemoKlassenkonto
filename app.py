@@ -3335,12 +3335,19 @@ Admin;Frau Sekretariat;;;;
                     sv_str = str(row['ID']).strip().upper(); desc_str = str(row['Beschreibung']).strip()
                     check_key = f"{sv_str}_{date_str}_{amt}_{desc_str}"
                     student_match = df_stamm[df_stamm['ID'] == sv_str]
-                    student_name = student_match.iloc[0]['Name'] if not student_match.empty else "⚠️ UNBEKANNT"
-                    student_class = (
-                        student_match.iloc[0]['Klasse']
-                        if not student_match.empty
-                        else ""
-                    )
+
+                    if student_match.empty:
+                        preview_list.append({
+                            "Status": "❌ UNBEKANNT",
+                            "Datum": format_date_display(row['Datum']),
+                            "Name": "⚠️ UNBEKANNT",
+                            "Betrag": round(float(row['Betrag']), 2),
+                            "Beschreibung": row['Beschreibung']
+                        })
+                        continue
+
+                    student_name = student_match.iloc[0]['Name']
+                    student_class = student_match.iloc[0]['Klasse']
                     is_duplicate = check_key in existing_keys
                     if is_duplicate:
                         duplicates_count += 1; status_icon = "🔁 BEREITS GEBUCHT"
@@ -3356,7 +3363,13 @@ Admin;Frau Sekretariat;;;;
                 st.caption("Vorschau der Analyse:")
                 df_preview = pd.DataFrame(preview_list)
                 def color_status(val): return f'color: {"#d9534f" if "BEREITS" in val else "#28a745"}; font-weight: bold'
-                st.dataframe(df_preview.style.map(color_status, subset=['Status']), use_container_width=True, hide_index=True)
+                st.dataframe(
+                    df_preview.style
+                        .map(color_status, subset=['Status'])
+                        .format({"Betrag": "{:.2f} €"}),
+                    use_container_width=True,
+                    hide_index=True
+                )
                 st.divider()
                 if len(new_unique_bookings) > 0:
                     col_btn, _ = st.columns([1, 3])
