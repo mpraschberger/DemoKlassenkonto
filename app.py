@@ -3342,6 +3342,9 @@ Admin;Frau Sekretariat;;;;
     # --- BANK IMPORT ---
     elif s_menu == "Bank-Import":
         st.subheader("🏦 Bank Import (ELBA CSV)")
+        if "bank_import_msg" in st.session_state:
+            st.success(st.session_state["bank_import_msg"])
+            del st.session_state["bank_import_msg"]
         st.info("Laden Sie hier die .csv Datei aus dem Online-Banking hoch.")
         uploaded_file = st.file_uploader("CSV Datei hier hineinziehen", type=["csv"], key="bank_csv_upload")
         if uploaded_file is not None:
@@ -3404,15 +3407,33 @@ Admin;Frau Sekretariat;;;;
                     hide_index=True
                 )
                 st.divider()
+
                 if len(new_unique_bookings) > 0:
                     col_btn, _ = st.columns([1, 3])
-                    if col_btn.button(f"🚀 {len(new_unique_bookings)} neue Buchungen importieren", type="primary"):
+
+                    if col_btn.button(
+                        f"🚀 {len(new_unique_bookings)} neue Buchungen importieren",
+                        type="primary"
+                    ):
                         if save_buchung_batch(pd.DataFrame(new_unique_bookings)):
-                            st.balloons(); st.success(f"✅ Import erfolgreich! {duplicates_count} Duplikate ignoriert."); st.session_state.pop("bank_csv_upload", None); st.rerun()
+
+                            st.session_state["bank_import_msg"] = (
+                                f"✅ Import erfolgreich! "
+                                f"{len(new_unique_bookings)} Buchungen importiert."
+                            )
+
+                            st.session_state["bank_csv_upload"] = None
+
+                            st.rerun()
+
                 elif duplicates_count > 0 and len(new_unique_bookings) == 0:
-                    st.success("✅ Alles auf dem neuesten Stand! Alle Zeilen in dieser CSV sind bereits gebucht.")
-                else: st.warning("Keine gültigen Daten gefunden.")
-            else: st.warning("In dieser Datei wurden keine gültigen IDs gefunden.")
+                    st.success(
+                        "✅ Alles auf dem neuesten Stand! "
+                        "Alle Zeilen in dieser CSV sind bereits gebucht."
+                    )
+
+                else:
+                    st.warning("Keine gültigen Daten gefunden.")
 
     elif s_menu == "Zugangs-Daten":
         st.subheader("🔑 Zugangs-Daten Verwaltung")
