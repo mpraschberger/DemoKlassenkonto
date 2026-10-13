@@ -775,8 +775,11 @@ def save_buchung_batch(neue_buchungen_df):
                 existing = set()
 
             df2 = df_in[~df_in['BuchungsHash'].astype(str).isin(existing)].copy()
+
             if len(df2) == 0:
+                st.warning("Alle Buchungen sind bereits vorhanden (Hash-Prüfung).")
                 return True
+
 
             for h in header:
                 if h not in df2.columns:
