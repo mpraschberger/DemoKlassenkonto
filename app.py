@@ -3342,9 +3342,16 @@ Admin;Frau Sekretariat;;;;
     # --- BANK IMPORT ---
     elif s_menu == "Bank-Import":
         st.subheader("🏦 Bank Import (ELBA CSV)")
+        if "upload_key" not in st.session_state:
+            st.session_state["upload_key"] = 0
         
         st.info("Laden Sie hier die .csv Datei aus dem Online-Banking hoch.")
-        uploaded_file = st.file_uploader("CSV Datei hier hineinziehen", type=["csv"], key="bank_csv_upload")
+        uploaded_file = st.file_uploader(
+            "CSV Datei hier hineinziehen",
+            type=["csv"],
+            key=f"bank_csv_upload_{st.session_state['upload_key']}"
+        )
+
         if uploaded_file is not None:
             df_import = parse_csv_elba(uploaded_file)
             if not df_import.empty:
@@ -3421,6 +3428,8 @@ Admin;Frau Sekretariat;;;;
                             )
 
                             time.sleep(1)
+
+                            st.session_state["upload_key"] += 1
 
                             st.rerun()
 
