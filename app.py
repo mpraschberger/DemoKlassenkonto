@@ -3349,17 +3349,6 @@ Admin;Frau Sekretariat;;;;
             if not df_import.empty:
                 invalid_count = 0
 
-                if 'Status' in df_import.columns:
-                    invalid_count = len(
-                        df_import[
-                            df_import['Status'].isin([
-                                'ID FEHLT',
-                                'DOPPELTE ID',
-                                '2 IDs GEFUNDEN',
-                                'SCHÜLER NICHT GEFUNDEN'
-                            ])
-                        ]
-                    )
                 existing_keys = set()
                 for _, row in df_buch.iterrows():
                     try:
