@@ -512,24 +512,49 @@ def parse_csv_elba(uploaded_file):
                 
                 id_matches = re.findall(r'\b(?:\d{4}[A-Z0-9]{6}|[A-Z]{3,5}\d{4,6}|[A-Z]{4}\d{6}|\d{5,10})\b', raw_text.upper())
                 
-                if id_matches and abs(amount_val) > 0.001:
-                    try:
-                        date_obj = datetime.strptime(raw_date, "%d.%m.%Y")
-                        date_db = date_obj.strftime("%Y-%m-%d")
-                    except:
-                        date_db = datetime.today().strftime("%Y-%m-%d")
-                    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    anzahl_kinder = len(id_matches)
-                    betrag_pro_kind = round(amount_val / anzahl_kinder, 2)
-                    for found_id in id_matches:
-                        parsed.append({
-                            "ID": found_id.upper(),
-                            "Betrag": betrag_pro_kind,
-                            "Datum": date_db,
-                            "Zeitstempel": now_ts,
-                            "Beschreibung": raw_text[:200],
-                            "Status": "Erledigt"
-                        })
+                if abs(amount_val) <= 0.001:
+                    continue
+
+                if len(id_matches) == 0:
+                    status = "ID FEHLT"
+
+                elif len(id_matches) > 1 and len(set(id_matches)) == 1:
+                    status = "DOPPELTE ID"
+
+                elif len(id_matches) > 1:
+                    status = "MEHRDEUTIG"
+
+                else:
+                    status = None
+
+                if status:
+                    parsed.append({
+                        "ID": "",
+                        "Betrag": amount_val,
+                        "Datum": raw_date,
+                        "Zeitstempel": "",
+                        "Beschreibung": raw_text[:200],
+                        "Status": status
+                    })
+                    continue
+                try:
+                    date_obj = datetime.strptime(raw_date, "%d.%m.%Y")
+                    date_db = date_obj.strftime("%Y-%m-%d")
+                except:
+                    date_db = datetime.today().strftime("%Y-%m-%d")
+
+                now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                found_id = id_matches[0]
+
+                parsed.append({
+                    "ID": found_id.upper(),
+                    "Betrag": amount_val,
+                    "Datum": date_db,
+                    "Zeitstempel": now_ts,
+                    "Beschreibung": raw_text[:200],
+                    "Status": "Erledigt"
+                })    
             except Exception: continue
     except Exception as e:
         st.error(f"Fehler beim Lesen der CSV: {e}")
