@@ -2016,11 +2016,7 @@ def render_booking_ui(is_teacher=False, preselected_class=None, multi_class=True
             .unique()
             .tolist()
         )
-        st.write(
-            df_stamm[
-                df_stamm["Rolle"].astype(str).str.strip().isin(["Admin", "Lehrer"])
-            ][["Name", "Rolle"]]
-        )
+        
 
 
         payee_val = st.selectbox(
