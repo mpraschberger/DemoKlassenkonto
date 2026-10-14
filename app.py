@@ -501,7 +501,13 @@ def generate_epc_qr(iban, bic, recipient, amount, text):
 def parse_csv_elba(uploaded_file):
     parsed = []
     try:
-        df = pd.read_csv(uploaded_file, sep=';', header=None, encoding='latin-1', dtype=str)
+        df = pd.read_csv(
+            uploaded_file,
+            sep=';',
+            header=None,
+            encoding='utf-8-sig',
+            dtype=str
+        )
         for index, row in df.iterrows():
             try:
                 raw_date = str(row[0]).strip() if pd.notna(row[0]) else ""
