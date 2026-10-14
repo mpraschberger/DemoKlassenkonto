@@ -1695,6 +1695,7 @@ def render_centered_login():
                                     )
 
                                     if qr_buffer:
+                                        st.success("QR-Code erzeugt")
                                         left, center, right = st.columns([1, 2, 1])
 
                                         with center:
