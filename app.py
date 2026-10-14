@@ -2473,12 +2473,12 @@ if menu == "Lehrer" and user_role in ["Lehrer", "Admin"]:
     
     with tab_akte:
 
-    render_student_details_ui(
-        df_stamm,
-        df_buch,
-        allowed_classes=kv_classes if kv_classes else None,
-        key_suffix="teacher"
-    )
+        render_student_details_ui(
+            df_stamm,
+            df_buch,
+            allowed_classes=kv_classes if kv_classes else None,
+            key_suffix="teacher"
+        )
 
     def _show_umsatz_table(df_in: pd.DataFrame, key_prefix: str):
         if df_in is None or df_in.empty:
