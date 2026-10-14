@@ -2450,15 +2450,35 @@ if menu == "Lehrer" and user_role in ["Lehrer", "Admin"]:
     is_kv = (user_role == "Admin") or (len(kv_classes) > 0)
 
     tab_labels = ["✍️ Buchen", "🧾 Meine Umsätze"]
+
     if is_kv:
         tab_labels.append("🏫 Klassenumsätze")
+
+    tab_labels.append("📂 Schüler-Akte")
     tab_labels.append("📊 Kontostände & Verlauf")
 
     tabs = st.tabs(tab_labels)
+
     tab_buchen = tabs[0]
     tab_meine = tabs[1]
-    tab_klasse = tabs[2] if is_kv else None
-    tab_ueberblick = tabs[3] if is_kv else tabs[2]
+
+    if is_kv:
+        tab_klasse = tabs[2]
+        tab_akte = tabs[3]
+        tab_ueberblick = tabs[4]
+    else:
+        tab_klasse = None
+        tab_akte = tabs[2]
+        tab_ueberblick = tabs[3]
+    
+    with tab_akte:
+
+    render_student_details_ui(
+        df_stamm,
+        df_buch,
+        allowed_classes=kv_classes if kv_classes else None,
+        key_suffix="teacher"
+    )
 
     def _show_umsatz_table(df_in: pd.DataFrame, key_prefix: str):
         if df_in is None or df_in.empty:
@@ -2626,6 +2646,10 @@ elif menu == "Admin" and user_role in ["Admin", "Lehrer"]:
         horizontal=True
     )
     if admin_group == "💶 Finanzen":
+
+        st.write("Rolle:", user_role)
+        st.write("ROLE=", repr(user_role))
+``
 
         if user_role == "Admin":
             s_menu = st.radio(
