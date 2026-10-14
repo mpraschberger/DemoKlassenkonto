@@ -3315,6 +3315,7 @@ Admin;Frau Sekretariat;;;;
                     id2k = df_stamm[['ID','Klasse']].copy(); id2k['ID'] = id2k['ID'].astype(str).str.upper().str.strip()
                     df_f['ID_norm'] = df_f['ID'].astype(str).str.upper().str.strip()
                     df_f = df_f.merge(id2k.rename(columns={'ID':'ID_norm'}), on='ID_norm', how='left')
+                    st.write(df_f.columns.tolist())
                     df_f = df_f[df_f['Klasse'].astype(str) == str(sel_klasse)]
                 if sel_lehrer != "(alle)":
                     df_f = df_f[df_f.get('Erfasst_Von','').astype(str) == str(sel_lehrer)]
