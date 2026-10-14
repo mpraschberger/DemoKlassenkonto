@@ -11,6 +11,7 @@ import random
 import math
 import hashlib
 import os
+import string
 import tempfile
 import segno
 import unicodedata
