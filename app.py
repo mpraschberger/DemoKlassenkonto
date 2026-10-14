@@ -2616,12 +2616,42 @@ if menu == "Lehrer" and user_role in ["Lehrer", "Admin"]:
         else:
             st.info(f"🔒 Kontostände für {selected_class_for_view} nur für den Klassenvorstand sichtbar.")
 
-elif menu == "Admin" and user_role == "Admin":
+elif menu == "Admin" and user_role in ["Admin", "Lehrer"]:
     st.header(f"🔐 Verwaltung ({user_name})")
     st.divider()
-    admin_group = st.radio("Bereich:", ["💶 Finanzen", "🛠️ Verwaltung"], horizontal=True)
+    admin_group = st.radio(
+        "Bereich:",
+        ["💶 Finanzen"] if user_role == "Lehrer"
+        else ["💶 Finanzen", "🛠️ Verwaltung"],
+        horizontal=True
+    )
     if admin_group == "💶 Finanzen":
-        s_menu = st.radio("Menü:", ["Manuell Buchen", "Bank-Import", "OFFEN", "🏫 Klassenübersicht", "Schüler-Akte", "Umsatzsuche"], horizontal=True)
+
+        if user_role == "Admin":
+            s_menu = st.radio(
+                "Menü:",
+                [
+                    "Manuell Buchen",
+                    "Bank-Import",
+                    "OFFEN",
+                    "🏫 Klassenübersicht",
+                    "Schüler-Akte",
+                    "Umsatzsuche"
+                ],
+                horizontal=True
+            )
+
+        else:  # Lehrer
+            s_menu = st.radio(
+                "Menü:",
+                [
+                    "Manuell Buchen",
+                    "OFFEN",
+                    "Schüler-Akte",
+                    "Umsatzsuche"
+                ],
+                horizontal=True
+            )
     else:
         s_menu = st.radio("Menü:", ["Benutzer anlegen", "Passwort Reset", "Zugangs-Daten", "Schuljahreswechsel", "Administration"], horizontal=True)
 
@@ -2930,7 +2960,18 @@ Admin;Frau Sekretariat;;;;
                             st.error("Fehler: Benutzer nicht in Datenbank gefunden.")
     elif s_menu == "Schüler-Akte":
         st.subheader("📂 Detaillierte Schüler-Akte")
-        render_student_details_ui(df_stamm, df_buch, allowed_classes=None, key_suffix="admin")
+
+        allowed = None
+
+        if user_role == "Lehrer":
+            allowed = [user_klasse]
+
+        render_student_details_ui(
+            df_stamm,
+            df_buch,
+            allowed_classes=allowed,
+            key_suffix="admin"
+        )
 
     elif s_menu == "OFFEN":
         st.subheader("Offene Auszahlungen an Lehrer")
