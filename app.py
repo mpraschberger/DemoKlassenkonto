@@ -2649,7 +2649,7 @@ elif menu == "Admin" and user_role in ["Admin", "Lehrer"]:
 
         st.write("Rolle:", user_role)
         st.write("ROLE=", repr(user_role))
-``
+
 
         if user_role == "Admin":
             s_menu = st.radio(
