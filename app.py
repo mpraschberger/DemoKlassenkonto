@@ -1850,14 +1850,16 @@ def render_open_payout_notice():
             zieltext = "für dich"
         else:
             zieltext = "insgesamt"
-            st.write(
-                "Offene ohne Klasse:",
-                len(
-                    offene[
-                        offene["Klasse"].isna() |
-                        (offene["Klasse"].astype(str).str.strip() == "")
-                    ]
+            st.dataframe(
+                offene_ohne_klasse.groupby(
+                    ["Beschreibung", "Erfasst_Von"],
+                    dropna=False
                 )
+                .agg(
+                    Anzahl=("ID", "count"),
+                    Betrag=("Betrag", "sum")
+                )
+                .reset_index()
             )
 
 
