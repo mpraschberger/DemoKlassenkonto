@@ -1862,6 +1862,11 @@ def render_open_payout_notice():
             Anzahl=('ID', 'count'),
             Gesamtbetrag=('Betrag', 'sum')
         ).reset_index()
+        st.dataframe(
+            grp[
+                ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An', 'Klasse', 'Anzahl']
+            ]
+        )
 
         st.write("Offene Positionen:", len(offene))
         st.write("Gruppen:", len(grp))
