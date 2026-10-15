@@ -1850,17 +1850,10 @@ def render_open_payout_notice():
             zieltext = "für dich"
         else:
             zieltext = "insgesamt"
-            st.dataframe(
-                offene_ohne_klasse.groupby(
-                    ["Beschreibung", "Erfasst_Von"],
-                    dropna=False
-                )
-                .agg(
-                    Anzahl=("ID", "count"),
-                    Betrag=("Betrag", "sum")
-                )
-                .reset_index()
-            )
+            
+            st.write("Offene Positionen:", len(offene))
+            st.write("Gruppen:", len(grp))
+
 
 
         grp = offene.groupby(
@@ -1870,6 +1863,7 @@ def render_open_payout_notice():
             Anzahl=('ID', 'count'),
             Gesamtbetrag=('Betrag', 'sum')
         ).reset_index()
+
 
         if offene.empty:
             st.success(f"✅ Hinweis: Es sind {zieltext} keine offenen Auszahlungen vorhanden. Die offenen Beträge scheinen verbucht/erledigt zu sein.")
