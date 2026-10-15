@@ -3017,9 +3017,12 @@ Admin;Frau Sekretariat;;;;
         st.subheader("Offene Auszahlungen an Lehrer")
         show_done = st.toggle("Erledigte anzeigen", value=False, key="offen_show_done", help="Wenn aktiviert, werden auch erledigte Auszahlungen (Status=Erledigt) angezeigt.")
         if show_done:
-            off = df_buch[(df_buch['Betrag']<0)].copy()
+            off = df_buch[(df_buch['Betrag'] < 0)].copy()
         else:
-            off = df_buch[(df_buch['Betrag']<0) & (df_buch['Status']!='Erledigt')].copy()
+            off = df_buch[
+                (df_buch['Betrag'] < 0) &
+                (df_buch['Status'].astype(str).str.strip() == 'Offen')
+            ].copy()
         if not off.empty:
             # Klasse zur Buchung ermitteln (über Schüler-ID aus dem Stammblatt)
             # Hinweis: df_buch speichert i.d.R. keine Klasse je Buchung, daher mappen wir über die ID.
