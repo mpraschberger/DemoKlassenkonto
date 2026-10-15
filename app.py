@@ -1841,7 +1841,10 @@ def render_open_payout_notice():
         df_open["Betrag"] = pd.to_numeric(df_open["Betrag"], errors="coerce").fillna(0.0)
         df_open["Status"] = df_open["Status"].astype(str).str.strip()
 
-        offene = df_open[(df_open["Betrag"] < 0) & (df_open["Status"] != "Erledigt")].copy()
+        offene = df_open[
+            (df_open["Betrag"] < 0) &
+            (df_open["Status"].astype(str).str.strip() == "Offen")
+        ].copy()
         if user_role == "Lehrer":
             offene = offene[
                 offene["Erfasst_Von"].astype(str).str.strip()
