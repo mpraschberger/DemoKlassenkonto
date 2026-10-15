@@ -1850,6 +1850,16 @@ def render_open_payout_notice():
             zieltext = "für dich"
         else:
             zieltext = "insgesamt"
+            st.write(
+                "Offene ohne Klasse:",
+                len(
+                    offene[
+                        offene["Klasse"].isna() |
+                        (offene["Klasse"].astype(str).str.strip() == "")
+                    ]
+                )
+            )
+
 
         grp = offene.groupby(
             ['Datum', 'Beschreibung', 'Erfasst_Von', 'Ueberweisen_An', 'Klasse'],
