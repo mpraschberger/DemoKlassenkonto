@@ -1851,8 +1851,7 @@ def render_open_payout_notice():
         else:
             zieltext = "insgesamt"
             
-            st.write("Offene Positionen:", len(offene))
-            st.write("Gruppen:", len(grp))
+            
 
 
 
@@ -1863,6 +1862,10 @@ def render_open_payout_notice():
             Anzahl=('ID', 'count'),
             Gesamtbetrag=('Betrag', 'sum')
         ).reset_index()
+
+        st.write("Offene Positionen:", len(offene))
+        st.write("Gruppen:", len(grp))
+
 
 
         if offene.empty:
@@ -1878,9 +1881,8 @@ def render_open_payout_notice():
 
 
 
-    except Exception:
-        # Hinweis darf die App nicht blockieren.
-        pass
+    except Exception as e:
+        st.error(f"Payout-Notice Fehler: {e}")
 
 render_open_payout_notice()
 
